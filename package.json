@@ -11,7 +11,10 @@
     "deploy": "git push heroku master"
   },
   "keywords": [],
-  "author": "",
+  "engines": {
+    "node": "12.14.1"
+  },
+  "author": "Bryson Creighton",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
