@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
+const licenseData = require('../data/agentLicenseData.json')
 
 const app = express()
 
@@ -15,8 +16,31 @@ app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
 
-app.get('/', (req, res) => {
-  res.send('Hello, 24/7 REcruit!')
+app.get('/licenseData', (req, res) => {
+  const { search = '', sort } = req.query;
+
+  if (sort) {
+    if (!['name'].includes(sort)) {
+      return res
+        .status(400)
+        .send('Sort must be one fo teh name, volume or transactions');
+    }
+  }
+
+  let results = licenseData
+    .filter( licensee => 
+        licensee
+            .licenseeName
+            .toLowerCase()
+            .includes(search.toLowerCase())
+      );
+
+  if (sort) {
+    results.sort((a, b) => {
+      return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
+    })
+  }
+  res.json(results)
 })
 
 app.use(function errorHandler(error, req, res, next) {
