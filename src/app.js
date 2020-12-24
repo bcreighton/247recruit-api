@@ -5,6 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const licenseData = require('../data/agentLicenseData.json')
+const mlsData = require('../data/agentMlsData.json')
 
 const app = express()
 
@@ -23,7 +24,7 @@ app.get('/licenseData', (req, res) => {
     if (!['name'].includes(sort)) {
       return res
         .status(400)
-        .send('Sort must be one fo teh name, volume or transactions');
+        .send('Sort must be name.');
     }
   }
 
@@ -40,6 +41,35 @@ app.get('/licenseData', (req, res) => {
       return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
     })
   }
+  res.json(results)
+})
+
+app.get('/mlsData', (req, res) => {
+  debugger;
+  const { search = '', sort } = req.query;
+
+  if (sort) {
+    if(!['name', 'trans', 'vol', 'exp'].includes(sort)) {
+      return res
+        .status(400)
+        .send('Sort must be name, trans, vol or exp.')
+    }
+  }
+
+  let results = mlsData
+    .filter( agent =>
+        agent
+          .name
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      );
+
+  if (sort) {
+    results.sort((a, b) => {
+      return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
+    })
+  }
+
   res.json(results)
 })
 
