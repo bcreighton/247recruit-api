@@ -4,7 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
-const licenseData = require('../data/agentLicenseData.json')
+// const licenseData = require('../data/agentLicenseData.json')
 const mlsData = require('../data/agentMlsData.json')
 
 const app = express()
@@ -17,7 +17,7 @@ app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
 
-app.get('/licenseData', (req, res) => {
+/* app.get('/licenseData', (req, res) => {
   const { search = '', sort } = req.query;
 
   if (sort) {
@@ -42,9 +42,9 @@ app.get('/licenseData', (req, res) => {
     })
   }
   res.json(results)
-})
+}) */
 
-app.get('/mlsData', (req, res) => {
+app.get('/agent', (req, res) => {
   debugger;
   const { search = '', sort } = req.query;
 
