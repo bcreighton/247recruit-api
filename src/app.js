@@ -4,7 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
-// const licenseData = require('../data/agentLicenseData.json')
+const licenseData = require('../data/agentLicenseData.json')
 const mlsData = require('../data/agentMlsData.json')
 
 const app = express()
@@ -16,15 +16,26 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
+app.use(validateBearerToken = (req, res, next) => {
+  const apiToken = process.env.API_TOKEN;
+  const authToken = req.get('Authorization');
 
-/* app.get('/licenseData', (req, res) => {
+  if (!authToken || authToken.split(' ')[1] !== apiToken) {
+    return res.status(401).json({
+      error: 'Unauthorized request'
+    })
+  }
+  next()
+})
+
+handleGetLicenseData = (req, res) => {
   const { search = '', sort } = req.query;
 
   if (sort) {
     if (!['name'].includes(sort)) {
       return res
         .status(400)
-        .send('Sort must be name.');
+        .send('Sort must be name, transSideUnits.');
     }
   }
 
@@ -38,21 +49,21 @@ app.use(cors())
 
   if (sort) {
     results.sort((a, b) => {
+      debugger;
       return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
     })
   }
   res.json(results)
-}) */
+}
 
-app.get('/agent', (req, res) => {
-  debugger;
+handleGetMlsData = (req, res) => {
   const { search = '', sort } = req.query;
 
   if (sort) {
-    if(!['name', 'trans', 'vol', 'exp'].includes(sort)) {
+    if(!['name', 'transSideUnits', 'vol', 'exp'].includes(sort)) {
       return res
         .status(400)
-        .send('Sort must be name, trans, vol or exp.')
+        .send('Sort must be name, transSideUnits, vol or exp.')
     }
   }
 
@@ -71,7 +82,10 @@ app.get('/agent', (req, res) => {
   }
 
   res.json(results)
-})
+}
+
+app.get('/api/licenseData', handleGetLicenseData)
+app.get('/api/mlsData', handleGetMlsData)
 
 app.use(function errorHandler(error, req, res, next) {
   let response
