@@ -76,9 +76,15 @@ handleGetMlsData = (req, res) => {
       );
 
   if (sort) {
-    results.sort((a, b) => {
-      return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
-    })
+    if (sort === 'transSideUnits') {
+      results.sort((a, b) => {
+        return parseInt(a[sort]) < parseInt(b[sort]) ? 1 : parseInt(a[sort]) > parseInt(b[sort]) ? -1 : 0
+      })
+    } else {
+      results.sort((a, b) => {
+        return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
+      })
+    }
   }
 
   res.json(results)
