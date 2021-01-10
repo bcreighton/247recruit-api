@@ -15,6 +15,7 @@ const morganOption = (NODE_ENV === 'production')
   : 'common';
 
 app.use(morgan(morganOption))
+app.use(express.json())
 app.use(helmet())
 app.use(cors())
 app.use(validateBearerToken = (req, res, next) => {
@@ -54,6 +55,8 @@ handleGetLicenseData = (req, res) => {
       return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
     })
   }
+
+  if (results.length === 0) res.status(400).send(`There are no agents matching the search of '${search}', please try again.`)
   res.json(results)
 }
 
@@ -98,7 +101,12 @@ const users =[
     "password": "c00d1ng1sc00l",
     "firstname": "Joe",
     "lastname": "Johnson",
-    "email": "jj@jj.com"
+    "email": "jj@jj.com",
+    "followedAgents": [
+      'ff6da226-530c-11eb-ae93-0242ac130002',
+      '0795e77e-530d-11eb-ae93-0242ac130002',
+      '107eb0f0-530d-11eb-ae93-0242ac130002'
+    ]
   },
   {
     "id": "ce20079c-2326-4f17-8ac4-f617bfd28b7f",
@@ -106,19 +114,59 @@ const users =[
     "password": "veryg00dpassw0rd",
     "firstname": "Susie",
     "lastname": "Stalen",
-    "email": "sue@sue.com"
+    "email": "sue@sue.com",
+    "followedAgents": [
+      '9f1aa6c0-530d-11eb-ae93-0242ac130002',
+      'a45e2b2a-530d-11eb-ae93-0242ac130002',
+      'a91f7ed4-530d-11eb-ae93-0242ac130002'
+    ]
   }
 ];
 
+const notes =[
+  {
+    "id": "f79099ae-52fe-11eb-ae93-0242ac130002",
+    "userId": "ce20079c-2326-4f17-8ac4-f617bfd28b7f",
+    "agentId": "ff342108-52fe-11eb-ae93-0242ac130002",
+    "title": "Note 1",
+    "Content": "This is test note 1"
+  },
+  {
+    "id": "fc52f8b0-52fe-11eb-ae93-0242ac130002",
+    "userId": "3c8da4d5-1597-46e7-baa1-e402aed70d80",
+    "agentId": "02c83d5e-52ff-11eb-ae93-0242ac130002",
+    "title": "Note 2",
+    "Content": "This is test note 2"
+  },
+]
+
 app.get('/api/licenseData', handleGetLicenseData)
 app.get('/api/mlsData', handleGetMlsData)
+
+// USER ROUTES
 
 app.get('/api/user', (req, res) => {
   res.json(users);
 })
 
-app.get('/api/user/:userId', (req, res) => {
-  console.log('ok')
+app.get('/api/user/:id', (req, res) => {
+  const { id } = req.params;
+  const user = users.find(u => u.id == id);
+
+  if (!user) res.status(400).send('User not found');
+
+  res.json(user);
+})
+
+app.get('/api/user/:id/followedAgents', (req, res) => {
+  const { id } = req.params;
+  const user = users.find(u => u.id == id);
+  if (!user) res.status(400).send('User not found');
+
+  const agents = user.followedAgents;
+  if (!agents) res.status(400).send('No followed agents available');
+
+  res.json(agents);
 })
 
 app.post('/api/user', (req, res) => {
@@ -147,19 +195,60 @@ app.post('/api/user', (req, res) => {
 
   users.push(newUser);
 
-  res.send('New user added!')
+  res.status(201).send('New user added!')
 })
 
-app.delete('/api/user/:userId', (req, res) => {
-  const { userId } = req.params;
+app.delete('/api/user/:id', (req, res) => {
+  const { id } = req.params;
 
-  const i = users.findIndex(u => u.id === userId );
+  const i = users.findIndex(u => u.id === id );
 
   if (i === -1) res.status(404).send('User not found');
 
   users.splice(i, 1);
 
   res.status(204).end();
+})
+
+// NOTES ROUTES
+
+app.get('/api/note', (req, res) => {
+  res.json(notes);
+})
+
+app.get('/api/note/:id', (req, res) => {
+  const { id } = req.params;
+  const note = notes.find(n => n.id == id)
+
+  if (!note) res.status(400).send('No note found');
+
+  res.json(note);
+})
+
+app.post('/api/note', (req, res) => {
+  const { userId, agentId, title, content } = req.body;
+
+  if (!userId) res.status(400).send('User Id is required');
+  if (!agentId) res.status(400).send('Agent Id is required');
+  if (!title) res.status(400).send('Title is required');
+  if (!content) res.status(400).send('Content is required');
+
+  if (title.length < 3) res.status(400).send('Title must be at least 3 characters long');
+  if (content.length < 5) res.status(400).send('Content must be at least 5 characters long');
+
+  const id = uuid();
+  const newNote = {
+    id,
+    userId,
+    agentId,
+    title,
+    content
+  };
+
+  notes.push(newNote);
+
+  res.status(201).send('New note added!')
+
 })
 
 app.use(function errorHandler(error, req, res, next) {
