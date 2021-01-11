@@ -94,34 +94,93 @@ handleGetMlsData = (req, res) => {
   res.json(results)
 }
 
-const users =[
+// agent array to test verification of agents to be followed
+const tempAgents = [
   {
-    "id": "3c8da4d5-1597-46e7-baa1-e402aed70d80",
-    "username": "sallyStudent",
-    "password": "c00d1ng1sc00l",
-    "firstname": "Joe",
-    "lastname": "Johnson",
-    "email": "jj@jj.com",
-    "followedAgents": [
-      'ff6da226-530c-11eb-ae93-0242ac130002',
-      '0795e77e-530d-11eb-ae93-0242ac130002',
-      '107eb0f0-530d-11eb-ae93-0242ac130002'
-    ]
+    "id":"ff6da226-530c-11eb-ae93-0242ac130002",
+    "name":"Karen Chappell [SALE] ",
+    "officeName":"Camillo Properties",
+    "licenseDate":"2/27/2013",
+    "licenseExp":"2/28/2021",
+    "phone":"713-539-3790",
+    "listingSideUnits":"1514",
+    "listingSideVolume":"$2,390,120",
+    "sellingSideUnits":"0",
+    "sellingSideVolume":"$0",
+    "transSideUnits":"1514",
+    "transSideVolume":"$2,390,120"
   },
   {
-    "id": "ce20079c-2326-4f17-8ac4-f617bfd28b7f",
-    "username": "johnBlocton",
-    "password": "veryg00dpassw0rd",
-    "firstname": "Susie",
-    "lastname": "Stalen",
-    "email": "sue@sue.com",
-    "followedAgents": [
-      '9f1aa6c0-530d-11eb-ae93-0242ac130002',
-      'a45e2b2a-530d-11eb-ae93-0242ac130002',
-      'a91f7ed4-530d-11eb-ae93-0242ac130002'
-    ]
-  }
-];
+    "id":"0795e77e-530d-11eb-ae93-0242ac130002",
+    "name":"Richard Hale [BRK] ",
+    "officeName":"Perry Development Management",
+    "licenseDate":"6/16/1988",
+    "licenseExp":"8/31/2021",
+    "phone":"&nbsp;",
+    "listingSideUnits":"1473",
+    "listingSideVolume":"$577,086,069",
+    "sellingSideUnits":"105",
+    "sellingSideVolume":"$39,703,930",
+    "transSideUnits":"1578",
+    "transSideVolume":"$616,789,999"
+  },
+  {
+    "id":"a91f7ed4-530d-11eb-ae93-0242ac130002",
+    "name":"Lance Loken [SALE] ",
+    "officeName":"Keller Williams Platinum",
+    "licenseDate":"9/17/2010",
+    "licenseExp":"9/30/2021",
+    "phone":"&nbsp;",
+    "listingSideUnits":"1189",
+    "listingSideVolume":"$303,238,683",
+    "sellingSideUnits":"212",
+    "sellingSideVolume":"$59,241,233",
+    "transSideUnits":"1401",
+    "transSideVolume":"$362,479,916"
+  },
+  {
+    "id":"d2e7bda6-b543-40f9-8982-acd1fdb9b712",
+    "name":"Jack Lipar [SALE] ",
+    "officeName":"LGI Homes",
+    "licenseDate":"11/13/2008",
+    "licenseExp":"11/30/2020",
+    "phone":"281-923-5166",
+    "listingSideUnits":"902",
+    "listingSideVolume":"$204,499,410",
+    "sellingSideUnits":"0",
+    "sellingSideVolume":"$0",
+    "transSideUnits":"902",
+    "transSideVolume":"$204,499,410"
+  },
+  {
+    "id":"d2e7bda6-b543-40f9-8982-acd1fdb9b712",
+    "name":"Michael Dickerson [SALE] ",
+    "officeName":"Progress Residential Property",
+    "licenseDate":"5/6/2009",
+    "licenseExp":"5/31/2021",
+    "phone":"800-218-4796",
+    "listingSideUnits":"758",
+    "listingSideVolume":"$1,256,607",
+    "sellingSideUnits":"555",
+    "sellingSideVolume":"$921,376",
+    "transSideUnits":"1313",
+    "transSideVolume":"$2,177,983"
+  },
+  {
+    "id":"d2e7bda6-b543-40f9-8982-acd1fdb9b712",
+    "name":"Jared Turner [SALE] ",
+    "officeName":"Turner Mangum,LLC",
+    "licenseDate":"3/5/2013",
+    "licenseExp":"3/31/2021",
+    "phone":"832-421-0077",
+    "listingSideUnits":"729",
+    "listingSideVolume":"$208,841,312",
+    "sellingSideUnits":"136",
+    "sellingSideVolume":"$37,831,956",
+    "transSideUnits":"865",
+    "transSideVolume":"$246,673,268"
+  },
+]
 
 const notes =[
   {
@@ -143,60 +202,8 @@ const notes =[
 app.get('/api/licenseData', handleGetLicenseData)
 app.get('/api/mlsData', handleGetMlsData)
 
-// USER ROUTES
-
-app.get('/api/user', (req, res) => {
-  res.json(users);
-})
-
-app.get('/api/user/:id', (req, res) => {
-  const { id } = req.params;
-  const user = users.find(u => u.id == id);
-
-  if (!user) res.status(400).send('User not found');
-
-  res.json(user);
-})
-
-app.get('/api/user/:id/followedAgents', (req, res) => {
-  const { id } = req.params;
-  const user = users.find(u => u.id == id);
-  if (!user) res.status(400).send('User not found');
-
-  const agents = user.followedAgents;
-  if (!agents) res.status(400).send('No followed agents available');
-
-  res.json(agents);
-})
-
-app.post('/api/user', (req, res) => {
-  const {username, pass, firstname, lastname, email } = req.body;
-
-  if (!username) res.status(400).send('Username is required');
-  if (!pass) res.status(400).send('Password is required')
-  if (!firstname || !lastname) res.status(400).send('Your first and last name are required');
-  if (!email) res.status(400).send('A valid email address is required');
-
-  if (username.length < 4 || username.length > 20) res.status(400).send('Usernname must be between 4 and 20 characters long');
-  if (pass.length < 8 || pass.length > 36) res.status(400).send('Passoword must be between 8 and 36 characters long.');
-  if (firstname.length < 2 || lastname.length < 2) res.status(400).send('Your first and last names must be longer than 2 characters long')
-  if (!pass.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) res.status(400).send('Password must contain at least one digit');
-  if (!email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) res.status(400).send('A valid email address is required');
-
-  const id = uuid();
-  const newUser = {
-    id,
-    username,
-    pass,
-    firstname,
-    lastname,
-    email
-  };
-
-  users.push(newUser);
-
-  res.status(201).send('New user added!')
-})
+// Combine agent data into one array
+// Find matching objects
 
 app.delete('/api/user/:id', (req, res) => {
   const { id } = req.params;
@@ -208,6 +215,20 @@ app.delete('/api/user/:id', (req, res) => {
   users.splice(i, 1);
 
   res.status(204).end();
+})
+
+// AGENT ROUTES
+app.get('/api/agent', (req, res) => {
+  res.json(tempAgents);
+})
+
+app.get('/api/agent/:id', (req, res) => {
+  const { id } = req.params;
+  const agent = tempAgents.find(a => a.id == id);
+
+  if (!agent) res.status(400).send('Agent not found');
+
+  res.json(agent);
 })
 
 // NOTES ROUTES
