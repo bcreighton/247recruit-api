@@ -1,4 +1,5 @@
 const express = require('express');
+const { v4: uuid } = require('uuid');
 
 const userRouter = express.Router();
 const bodyParser = express.json();
@@ -75,6 +76,17 @@ userRouter
         if (!user) res.status(400).send('User not found');
 
         res.json(user);
+    })
+    .delete((req, res) => {
+      const { id } = req.params;
+
+      const i = users.findIndex(u => u.id === id );
+    
+      if (i === -1) res.status(404).send('User not found');
+    
+      users.splice(i, 1);
+    
+      res.status(204).end();
     })
 
 userRouter
