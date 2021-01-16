@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS agents
+    DROP COLUMN brokerage;
