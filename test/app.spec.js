@@ -1,6 +1,6 @@
 const app = require('../src/app')
 
-describe('App', () => {
+describe.skip('App', () => {
   //initial test
   it('GET / responds with 200 containing "Hello, 24/7 REcruit!"', () => {
     return supertest(app)

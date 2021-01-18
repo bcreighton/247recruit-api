@@ -6,10 +6,10 @@ CREATE TABLE agents (
     phone TEXT,
     license_exp DATE,
     sponsor_date DATE,
-    list_units DECIMAL (7,2) NOT NULL,
+    list_units INTEGER NOT NULL,
     list_vol DECIMAL (12,2) NOT NULL,
-    sell_units DECIMAL (7,2) NOT NULL,
+    sell_units INTEGER NOT NULL,
     sell_vol DECIMAL (12,2) NOT NULL,
-    tot_units DECIMAL (10,2) NOT NULL,
+    tot_units INTEGER NOT NULL,
     tot_vol DECIMAL (14,2) NOT NULL
 );
