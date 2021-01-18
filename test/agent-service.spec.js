@@ -79,6 +79,8 @@ describe(`Agent service object`, () => {
         }
     ]
 
+    // Establish db connection
+
     before(() => {
         db = knex({
             client: 'pg',
@@ -86,8 +88,17 @@ describe(`Agent service object`, () => {
         });
     });
 
+    // Clear all data from the db tables
+
     before(() => db('notes').truncate());
     before(() => db('followed_agents').truncate());
+
+    // Remove all foreign key constraints to allow for removal of all data in the db tables
+    // Knex provides issues with the naming convention of foreign keys.
+    // psql creation uses 'fkey', Knex creation uses 'foreign'
+    // This creates an issue when the database has to be rebuilt
+    // Can be avoided by useing Knex migration and db creation.
+    // Standard SQL will recreate this issue
     before(() => db.raw(
         'ALTER TABLE notes DROP CONSTRAINT notes_agent_id_foreign'
     ));
@@ -110,10 +121,12 @@ describe(`Agent service object`, () => {
         'ALTER TABLE agents DROP CONSTRAINT agents_brokerage_foreign'
     ));
 
+    // Clear data from tables following foreign key constraint removal
     before(() => db('users').truncate());
     before(() => db('brokerages').truncate());
     before(() => db('agents').truncate());
 
+    // Re-establish foreign key relationships that were removed above.
     before(() => {
         return db.schema.table('agents', table => {
             table.foreign('brokerage')
@@ -153,6 +166,7 @@ describe(`Agent service object`, () => {
         })
     })
 
+    // insert test data into the appropriate
     before(() => {
         return (
             db
