@@ -72,5 +72,101 @@ module.exports = {
             city: "Amarillo",
             st: "TX"
         }
-    ]
+    ],
+
+    testUsers: [
+        {
+            id: 1,
+            username: "srogan0",
+            first_name: "Sean",
+            last_name: "Rogan",
+            email: "srogan0@springer.com",
+            phone: "927-708-1215",
+            brokerage: 1
+        }, 
+        {
+            id: 2,
+            username: "glashford1",
+            first_name: "Graig",
+            last_name: "Lashford",
+            email: "glashford1@mapy.cz",
+            phone: "718-167-1942",
+            brokerage: 2
+        }, 
+        {
+            id: 3,
+            username: "mdemaid2",
+            first_name: "Man",
+            last_name: "Demaid",
+            email: "mdemaid2@icq.com",
+            phone: "831-747-7875",
+            brokerage: 3
+        }
+    ],
+
+    testNotes: [
+        {
+            id: 1,
+            timestamp: new Date('2016-01-03T06:43:46.000Z'),
+            title: "enim blandit mi in",
+            content: "Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat. Nulla nisl. Nunc nisl.",
+            username_id: 1,
+            agent_id: 2
+        }, 
+        {
+            id: 2,
+            timestamp: new Date('2016-12-31T20:00:10.000Z'),
+            title: "adipiscing elit",
+            content: "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem. Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo.",
+            username_id: 2,
+            agent_id: 2
+        }, 
+        {
+            id: 3,
+            timestamp: new Date('2017-10-25T13:07:42.000Z'),
+            title: "ornare consequat",
+            content: "Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque.",
+            username_id: 2,
+            agent_id: 2
+        }, 
+        {
+            id: 4,
+            timestamp: new Date('2018-02-24T11:44:53.000Z'),
+            title: "turpis enim",
+            content: "Vestibulum sed magna at nunc commodo placerat.",
+            username_id: 3,
+            agent_id: 3
+        }, 
+        {
+            id: 5,
+            timestamp: new Date('2020-05-25T21:10:02.000Z'),
+            title: "fusce consequat nulla",
+            content: "Aenean fermentum.",
+            username_id: 1,
+            agent_id: 1
+        }, 
+        {
+            id: 6,
+            timestamp: new Date('2017-08-24T12:06:56.000Z'),
+            title: "in faucibus orci",
+            content: "Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.",
+            username_id: 2,
+            agent_id: 1
+        }
+    ],
+
+    testFollowedAgents: [
+        {
+            agent_id: 3,
+            username_id: 3
+        }, 
+        {
+            agent_id: 3,
+            username_id: 2
+        }, 
+        {
+            agent_id: 2,
+            username_id: 1
+        }
+    ],
 };

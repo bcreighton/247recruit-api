@@ -1,3 +1,5 @@
+const {testAgents, testBrokerages, testUsers, testNotes, testFollowedAgents} = require('./test-vars');
+
 const dbTableTransactions = {
     cleanDB(db) {
         return db('notes').truncate()
@@ -54,6 +56,47 @@ const dbTableTransactions = {
                     .references('agents.id');
             })
         })
+    },
+
+    insertAgentData(db) {
+        return db.into('agents')
+            .insert(testAgents)
+    },
+
+    insertBrokerageData(db) {
+        return db.into('brokerages')
+                .insert(testBrokerages)
+    },
+
+    insertUserData(db) {
+        return db.into('users')
+            .insert(testUsers)
+    },
+
+    insertNoteData(db) {
+        return db.into('notes')
+            .insert(testNotes)
+    },
+
+    insertFollowedAgents(db) {
+        return db.into('followed_agents')
+            .insert(testFollowedAgents)
+    },
+
+    alterAgentsBrokerageFkey(db) {
+        return db('agents')
+                .where('id', '=', 1)
+                .update('brokerage', 1)
+                .then(() => {
+                    return db('agents')
+                        .where('id', '=', 2)
+                        .update('brokerage', 2)
+                })
+                .then(() => {
+                    return db('agents')
+                        .where('id', '=', 3)
+                        .update('brokerage', 3)
+                });
     }
 }
 
