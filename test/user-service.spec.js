@@ -1,8 +1,6 @@
 const { expect } = require("chai");
 const UserService = require('../src/services/user-service');
-const BrokerageService = require('../src/services/brokerage-service');
-const AgentService = require('../src/services/agent-service')
-const {testAgents, testBrokerages, testUsers} = require('./test-vars');
+const {testAgents, testBrokerages, testUsers} = require('./fixtures');
 const dbTableTransactions = require('./db-table-transactions');
 const knex = require('knex');
 

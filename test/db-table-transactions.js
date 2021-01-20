@@ -1,4 +1,4 @@
-const {testAgents, testBrokerages, testUsers, testNotes, testFollowedAgents} = require('./test-vars');
+const {testAgents, testBrokerages, testUsers, testNotes, testFollowedAgents} = require('./fixtures');
 
 const dbTableTransactions = {
     cleanDB(db) {

@@ -2,7 +2,6 @@
 ALTER TABLE IF EXISTS agents
     DROP COLUMN brokerage;
 
--- DROP the table and constraints in a specific order
 DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS followed_agents;
 DROP TABLE IF EXISTS users;
