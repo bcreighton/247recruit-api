@@ -35,7 +35,7 @@ app.use(validateBearerToken = (req, res, next) => {
 app.use(mlsRouter);
 app.use(licenseRouter);
 app.use(userRouter);
-app.use(agentRouter);
+app.use('/api/agent', agentRouter);
 app.use(noteRouter);
 
 app.use(function errorHandler(error, req, res, next) {

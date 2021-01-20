@@ -1,5 +1,6 @@
 const AgentService = {
     getAgents(knex) {
+        debugger;
         return knex.select('*').from('agents')
     },
 

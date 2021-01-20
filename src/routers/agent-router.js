@@ -1,5 +1,6 @@
 const express = require('express');
 
+const AgentService = require('../services/agent-service');
 const agentRouter = express.Router();
 
 const tempAgents = [
@@ -90,11 +91,18 @@ const tempAgents = [
 ]
 
 agentRouter
-    .route('/api/agent')
-    .get((req, res) => res.status(200).json(tempAgents));
+    .route('/')
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db');
+        AgentService.getAgents(knexInstance)
+            .then(agents => {
+                res.json(agents)
+            })
+            .catch(next)
+    });
 
 agentRouter
-    .route('/api/agent/:id')
+    .route('/:id')
     .get((req, res) => {
         const { id } = req.params;
         const agent = tempAgents.find(a => a.id == id);
