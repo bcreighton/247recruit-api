@@ -22,7 +22,7 @@ describe(`Brokerage service object`, () => {
 
     context(`Given 'brokerages' has data`, () => {
         // insert necessary data for brokerage table requirements
-        before(() => {
+        beforeEach(() => {
             return dbTableTransactions.insertAgentData(db)
             .then(() => dbTableTransactions.insertBrokerageData(db))
             .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
@@ -39,6 +39,23 @@ describe(`Brokerage service object`, () => {
                     expect(actual).to.eql(testBrokerages);
                 });
         });
+
+        it(`getById() resolves a brokerage by id from the 'brokerages' table`, () => {
+            const thirdId = 3;
+            const thirdTestBrokerage = testBrokerages[thirdId -1];
+
+            return BrokerageService.getById(db, thirdId)
+                .then(actual => {
+                    expect(actual).to.eql({
+                        id: thirdId,
+                        brokerage_name: thirdTestBrokerage.brokerage_name,
+                        broker_id: thirdTestBrokerage.broker_id,
+                        street: thirdTestBrokerage.street,
+                        city: thirdTestBrokerage.city,
+                        st: thirdTestBrokerage.st
+                    })
+                })
+        })
     });
 
     context(`Given 'brokerages' has no data`, () => {
