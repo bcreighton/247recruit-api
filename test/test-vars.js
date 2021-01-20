@@ -166,6 +166,10 @@ module.exports = {
         }, 
         {
             agent_id: 2,
+            username_id: 3
+        }, 
+        {
+            agent_id: 1,
             username_id: 1
         }
     ],
