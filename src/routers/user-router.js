@@ -1,5 +1,7 @@
 const express = require('express');
 const { v4: uuid } = require('uuid');
+const UserService = require('../services/user-service')
+const FollowedAgentsService = require('../services/followed-agent-service')
 
 const userRouter = express.Router();
 const bodyParser = express.json();
@@ -35,8 +37,14 @@ const users =[
 
 userRouter
     .route('/api/user')
-    .get((req, res) => {
-        res.json(users);
+    .get((req, res, next) => {
+      const knexInstance = req.app.get('db');
+
+      UserService.getUsers(knexInstance)
+        .then(users => {
+          res.json(users);
+        })
+        .catch(next)
     })
     .post(bodyParser, (req, res) => {
         const {username, pass, firstname, lastname, email} = req.body;
@@ -69,13 +77,20 @@ userRouter
 
 userRouter
     .route('/api/user/:id')
-    .get((req, res) => {
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db');
         const { id } = req.params;
-        const user = users.find(u => u.id == id);
 
-        if (!user) res.status(400).send('User not found');
-
-        res.json(user);
+        UserService.getById(knexInstance, id)
+          .then(user => {
+            if (!user) {
+              return res.status(404).json({
+                error: {message: `User does not exist`}
+              })
+            }
+            res.json(user)
+          })
+          .catch(next)
     })
     .delete((req, res) => {
       const { id } = req.params;
@@ -91,9 +106,22 @@ userRouter
 
 userRouter
     .route('/api/user/:id/followedAgents')
-    .get((req, res) => {
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db');
         const { id } = req.params;
-        const user = users.find(u => u.id == id);
+
+        FollowedAgentsService.getByUsernameId(knexInstance, id)
+          .then(agents => {
+            if (!agents) {
+              return res.status(404).json({
+                error: {message: 'You are not following any agents'}
+              })
+            }
+            res.json(agents)
+          })
+          .catch(next)
+
+        
         if (!user) res.status(400).send('User not found');
 
         const agents = user.followedAgents;

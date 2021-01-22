@@ -22,6 +22,11 @@ agentRouter
         
         AgentService.getById(knexInstance, id)
             .then(agent => {
+                if (!agent) {
+                    return res.status(404).json({
+                        error: { message: `Agent doesn't exist`}
+                    })
+                }
                 res.json(agent)
             })
             .catch(next)

@@ -30,34 +30,29 @@ describe.only(`Agent Endpoints`, () => {
     afterEach(() => dbTableTransactions.cleanDB(db));
     after(() => db.destroy());
 
-    describe(`GET /api/agent`, () => {
-      context(`Given no agents`, () => {
+    describe(`Given no agents`, () => {
+      context(`GET /api/agent`, () => {
         it(`responds with 200 and an empty list`, () => {
           return supertest(app)
             .get('/api/agent')
             .set(auth, token)
             .expect(200, [])
         })
+      });
+
+      context(`GET /api/agent/:id`, () => {
+        it(`responds with 404`, () => {
+          const agentId = 123456789;
+
+          return supertest(app)
+            .get(`/api/agent/${agentId}`)
+            .set(auth, token)
+            .expect(404, {error: { message: `Agent doesn't exist`}})
+        })
       })
-  
-      context(`Given there are agents in the database`, () => {
-          // insert necessary data for agent table requirements
-          beforeEach(() => {
-              return dbTableTransactions.insertAgentData(db)
-              .then(() => dbTableTransactions.insertBrokerageData(db))
-              .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
-          });
-  
-          it(`GET /api/agent responds with 200 and all of the agents`, () => {
-              return supertest(app)
-                .get('/api/agent')
-                .set(auth, token)
-                .expect(200, updatedTestAgents)
-          });
-        });
     })
-    
-    describe(`GET /api/agent/:id`, () => {
+
+    describe(`Given there are agents in the database`, () => {
       // insert necessary data for agent table requirements
       beforeEach(() => {
         return dbTableTransactions.insertAgentData(db)
@@ -65,14 +60,25 @@ describe.only(`Agent Endpoints`, () => {
         .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
       });
 
-      it(`GET /api/agent/:id responds with 200 and the specific agent`, () => {
-        const agentId = 2;
-        const expectedAgent = updatedTestAgents[agentId -1];
+      context(`GET /api/agent`, () => {
+        it(`responds with 200 and all of the agents`, () => {
+            return supertest(app)
+              .get('/api/agent')
+              .set(auth, token)
+              .expect(200, updatedTestAgents)
+        });
+      });
 
-        return supertest(app)
-          .get(`/api/agent/${agentId}`)
-          .set(auth, token)
-          .expect(200, expectedAgent)
+      context(`GET /api/agent/:id`, () => {
+        it(`responds with 200 and the specific agent`, () => {
+          const agentId = 2;
+          const expectedAgent = updatedTestAgents[agentId -1];
+  
+          return supertest(app)
+            .get(`/api/agent/${agentId}`)
+            .set(auth, token)
+            .expect(200, expectedAgent)
+        })
       })
-    })   
+    })
 });
