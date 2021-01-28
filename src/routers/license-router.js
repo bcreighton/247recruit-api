@@ -24,7 +24,7 @@ handleGetLicenseData = (req, res) => {
 
     if (sort) {
         results.sort((a, b) => {
-        debugger;
+        
         return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
         })
     }

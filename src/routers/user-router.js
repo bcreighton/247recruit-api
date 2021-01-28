@@ -36,7 +36,7 @@ const users =[
   ];
 
 userRouter
-    .route('/api/user')
+    .route('/')
     .get((req, res, next) => {
       const knexInstance = req.app.get('db');
 
@@ -76,7 +76,7 @@ userRouter
     })
 
 userRouter
-    .route('/api/user/:id')
+    .route('/:id')
     .get((req, res, next) => {
         const knexInstance = req.app.get('db');
         const { id } = req.params;
@@ -105,29 +105,29 @@ userRouter
     })
 
 userRouter
-    .route('/api/user/:id/followedAgents')
+    .route('/:id/followed-agents')
     .get((req, res, next) => {
         const knexInstance = req.app.get('db');
         const { id } = req.params;
+        
 
-        FollowedAgentsService.getByUsernameId(knexInstance, id)
-          .then(agents => {
-            if (!agents) {
+        UserService.getById(knexInstance, id)
+          .then(user => {
+            
+            if (!user) {
               return res.status(404).json({
-                error: {message: 'You are not following any agents'}
+                error: {message: `User does not exist`}
               })
             }
-            res.json(agents)
+            
+            FollowedAgentsService.getByUsernameId(knexInstance, id)
+              .then(agents => {
+                  
+                  return res.json(agents)
+              })
+              .catch(next)
           })
           .catch(next)
-
-        
-        if (!user) res.status(400).send('User not found');
-
-        const agents = user.followedAgents;
-        if (!agents) res.status(400).send('No followed agents available');
-
-        res.json(agents);
     })
 
 module.exports = userRouter;

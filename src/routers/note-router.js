@@ -1,5 +1,6 @@
 const express = require('express');
 const { v4: uuid } = require('uuid');
+const NoteService = require('../services/note-service');
 
 const noteRouter = express.Router();
 const bodyParser = express.json();
@@ -22,8 +23,15 @@ const notes =[
 ]
 
 noteRouter
-    .route('/api/note')
-    .get((req, res) => res.status(200).json(notes))
+    .route('/')
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db')
+        NoteService.getNotes(knexInstance)
+            .then(notes => {
+                res.json(notes)
+            })
+            .catch(next);
+    })
     .post(bodyParser, (req, res) => {
         const { userId, agentId, title, content } = req.body;
 
@@ -50,14 +58,21 @@ noteRouter
     });
 
 noteRouter
-    .route('/api/note/:id')
-    .get((req, res) => {
+    .route('/:id')
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db');
         const { id } = req.params;
-        const note = notes.find(n => n.id == id)
 
-        if (!note) res.status(400).send('No note found');
-
-        res.status(200).json(note);
+        NoteService.getById(knexInstance, id)
+            .then(note => {
+                if (!note) {
+                    return res.status(404).json({
+                        error: { message: `Note does not exist`}
+                    })
+                }
+                return res.json(note)
+            })
+            .catch(next)
     })
     .delete((req, res) => {
         const { id } = req.params;

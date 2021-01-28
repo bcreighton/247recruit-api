@@ -4,6 +4,7 @@ const UserService = {
     },
 
     getById(knex, id) {
+        
         return knex
             .from('users')
             .select('*')

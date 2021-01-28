@@ -1,0 +1,36 @@
+const express = require('express');
+const BrokerageService = require('../services/brokerage-service');
+
+const brokerageRouter = express.Router();
+
+brokerageRouter
+    .route('/')
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db')
+        
+        BrokerageService.getBrokerages(knexInstance)
+            .then(brokerages => {
+                res.json(brokerages)
+            })
+            .catch(next);
+    })
+
+brokerageRouter
+    .route('/:id')
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db')
+        const { id } = req.params;
+
+        BrokerageService.getById(knexInstance, id)
+            .then(brokerage => {
+                if (!brokerage) {
+                    return res.status(404).json({
+                        error: { message: 'Brokerage does not exist'}
+                    })
+                }
+                return res.json(brokerage)
+            })
+            .catch(next)
+    })
+
+module.exports = brokerageRouter;

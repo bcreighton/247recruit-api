@@ -9,6 +9,7 @@ const userRouter = require('./routers/user-router')
 const licenseRouter = require('./routers/license-router')
 const agentRouter = require('./routers/agent-router')
 const noteRouter = require('./routers/note-router')
+const brokerageRouter = require('./routers/brokerage-router')
 
 const app = express()
 
@@ -34,9 +35,10 @@ app.use(validateBearerToken = (req, res, next) => {
 
 app.use(mlsRouter);
 app.use(licenseRouter);
-app.use(userRouter);
+app.use('/api/user', userRouter);
 app.use('/api/agent', agentRouter);
-app.use(noteRouter);
+app.use('/api/note', noteRouter);
+app.use('/api/brokerage', brokerageRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response

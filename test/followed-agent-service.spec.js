@@ -67,7 +67,6 @@ describe(`Followed Agent service object`, () => {
             return FollowedAgentService.deleteFollowedAgent(db, username_id, agent_id)
                 .then(() => FollowedAgentService.getFollowedAgents(db))
                 .then(allFollowedAgents => {
-                    debugger;
                     const expected = testFollowedAgents.filter(a => {
                         for (let key in filter) {
                             if (a[key] === undefined || a[key] != filter[key])
