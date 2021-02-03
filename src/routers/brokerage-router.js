@@ -1,4 +1,5 @@
 const express = require('express');
+const xss = require('xss');
 const BrokerageService = require('../services/brokerage-service');
 
 const brokerageRouter = express.Router();
@@ -28,7 +29,14 @@ brokerageRouter
                         error: { message: 'Brokerage does not exist'}
                     })
                 }
-                return res.json(brokerage)
+                return res.json({
+                    id: brokerage.id,
+                    brokerage_name: xss(brokerage.brokerage_name),
+                    broker_id: brokerage.broker_id,
+                    street: xss(brokerage.street),
+                    city: xss(brokerage.city),
+                    st: brokerage.st
+                })
             })
             .catch(next)
     })

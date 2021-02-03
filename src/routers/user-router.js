@@ -1,4 +1,5 @@
 const express = require('express');
+const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const UserService = require('../services/user-service')
 const FollowedAgentsService = require('../services/followed-agent-service')
@@ -88,7 +89,15 @@ userRouter
                 error: {message: `User does not exist`}
               })
             }
-            res.json(user)
+            res.json({
+              id: user.id,
+              username: xss(user.username),
+              first_name: user.first_name,
+              last_name: user.last_name,
+              email: user.email,
+              phone: user.phone,
+              brokerage: user.brokerage
+            })
           })
           .catch(next)
     })

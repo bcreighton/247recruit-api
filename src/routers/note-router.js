@@ -1,4 +1,5 @@
 const express = require('express');
+const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const NoteService = require('../services/note-service');
 
@@ -70,7 +71,14 @@ noteRouter
                         error: { message: `Note does not exist`}
                     })
                 }
-                return res.json(note)
+                return res.json({
+                    id: note.id,
+                    timestamp: note.timestamp,
+                    title: xss(note.title),
+                    content: xss(note.content),
+                    username_id: note.username_id,
+                    agent_id: note.agent_id
+                })
             })
             .catch(next)
     })

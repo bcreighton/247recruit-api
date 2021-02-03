@@ -173,4 +173,47 @@ module.exports = {
             username_id: 1
         }
     ],
+
+    maliciousData: {
+        agent: {
+            id: 911,
+            agent_name: 'Naughty Naughty <script>alert("xss");</script>',
+            license_num: 270801,
+            email: "sstamp0@cnet.com",
+            phone: "488-624-5979",
+            license_exp: '2023-07-04T06:00:00.000Z',
+            sponsor_date: '2000-07-28T06:00:00.000Z',
+            list_units: 345,
+            list_vol: "441895217.34",
+            sell_units: 51,
+            sell_vol: "45341408.10",
+            tot_units: 2451,
+            tot_vol: "58228599.22"
+        },
+        user: {
+            id: 911,
+            username: 'Naughty Naughty <script>alert("xss");</script>',
+            first_name: "Sean",
+            last_name: "Rogan",
+            email: "srogan0@springer.com",
+            phone: "927-708-1215",
+            brokerage: 1
+        },
+        brokerage: {
+            id: 911,
+            brokerage_name: 'Naughty Naughty <script>alert("xss");</script>',
+            broker_id: 1,
+            street: 'Naughty Naughty <script>alert("xss");</script>',
+            city: 'Naughty Naughty <script>alert("xss");</script>',
+            st: "TX"
+        },
+        note: {
+            id:911,
+            timestamp: '2016-01-03T06:43:46.000Z',
+            title: 'Naughty Naughty <script>alert("xss");</script>',
+            content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+            username_id: 3,
+            agent_id: 2
+        },
+    }
 };

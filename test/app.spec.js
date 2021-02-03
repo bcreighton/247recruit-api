@@ -1,5 +1,12 @@
 const { expect } = require("chai");
-const {testAgents, testBrokerages, testUsers, testFollowedAgents, testNotes} = require('./app.fixtures');
+const {
+  testAgents, 
+  testBrokerages, 
+  testUsers, 
+  testFollowedAgents, 
+  testNotes, 
+  maliciousData 
+} = require('./app.fixtures');
 const dbTableTransactions = require('./db-table-transactions');
 const knex = require('knex');
 const supertest = require("supertest");
@@ -58,6 +65,24 @@ describe(`Agent Endpoints`, () => {
         .then(() => dbTableTransactions.insertBrokerageData(db))
         .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
       });
+
+      context(`Given an XSS attack agent`, () => {
+        beforeEach('insert malicious agent', () => {
+          return db
+            .into('agents')
+            .insert([ maliciousData.agent ])
+        })
+
+        it('removes XSS attack content', () => {
+          return supertest(app)
+            .get(`/api/agent/${maliciousData.agent.id}`)
+            .set(auth, token)
+            .expect(200)
+            .expect(res => {
+              expect(res.body.agent_name).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+            })
+        })
+      })
 
       context(`GET /api/agent`, () => {
         it(`responds with 200 and all of the agents`, () => {
@@ -136,6 +161,24 @@ describe(`User Endpoints`, () => {
       .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
       .then(() => dbTableTransactions.insertUserData(db))
     });
+
+    context(`Given an XSS attack user`, () => {
+      beforeEach('insert malicious user', () => {
+        return db
+          .into('users')
+          .insert([ maliciousData.user ])
+      })
+
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/user/${maliciousData.user.id}`)
+          .set(auth, token)
+          .expect(200)
+          .expect(res => {
+            expect(res.body.username).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+          })
+      })
+    })
 
     context(`GET /api/user`, () => {
       it(`responds with 200 and all of the users`, () => {
@@ -295,6 +338,25 @@ describe(`Note Endpoints`, () => {
       .then(() => dbTableTransactions.insertNoteData(db))
     });
 
+    context(`Given an XSS attack note`, () => {
+      beforeEach('insert malicious note', () => {
+        return db
+          .into('notes')
+          .insert([ maliciousData.note ])
+      })
+
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/note/${maliciousData.note.id}`)
+          .set(auth, token)
+          .expect(200)
+          .expect(res => {
+            expect(res.body.title).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+            expect(res.body.content).to.eql(`Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`)
+          })
+      })
+    })
+
     context(`GET /api/note/:note-id`, () => {
       it(`responds with 200 and the specific note`, () => {
         const noteId = 2;
@@ -358,6 +420,26 @@ describe(`Brokerage Endpoints`, () => {
       .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
       .then(() => dbTableTransactions.insertNoteData(db))
     });
+
+    context(`Given an XSS attack brokerage`, () => {
+      beforeEach('insert malicious brokerage', () => {
+        return db
+          .into('brokerages')
+          .insert([ maliciousData.brokerage ])
+      })
+
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/brokerage/${maliciousData.brokerage.id}`)
+          .set(auth, token)
+          .expect(200)
+          .expect(res => {
+            expect(res.body.brokerage_name).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+            expect(res.body.street).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+            expect(res.body.city).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+          })
+      })
+    })
 
     context(`GET /api/brokerage/:brokerage-id`, () => {
       it(`responds with 200 and the specific brokerage`, () => {
