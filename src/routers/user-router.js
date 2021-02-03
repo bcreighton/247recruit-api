@@ -104,30 +104,4 @@ userRouter
       res.status(204).end();
     })
 
-userRouter
-    .route('/:id/followed-agents')
-    .get((req, res, next) => {
-        const knexInstance = req.app.get('db');
-        const { id } = req.params;
-        
-
-        UserService.getById(knexInstance, id)
-          .then(user => {
-            
-            if (!user) {
-              return res.status(404).json({
-                error: {message: `User does not exist`}
-              })
-            }
-            
-            FollowedAgentsService.getByUsernameId(knexInstance, id)
-              .then(agents => {
-                  
-                  return res.json(agents)
-              })
-              .catch(next)
-          })
-          .catch(next)
-    })
-
 module.exports = userRouter;

@@ -10,6 +10,7 @@ const licenseRouter = require('./routers/license-router')
 const agentRouter = require('./routers/agent-router')
 const noteRouter = require('./routers/note-router')
 const brokerageRouter = require('./routers/brokerage-router')
+const followedAgentRouter = require('./routers/followed-agent-router')
 
 const app = express()
 
@@ -39,6 +40,7 @@ app.use('/api/user', userRouter);
 app.use('/api/agent', agentRouter);
 app.use('/api/note', noteRouter);
 app.use('/api/brokerage', brokerageRouter);
+app.use('/api/followed-agent', followedAgentRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response

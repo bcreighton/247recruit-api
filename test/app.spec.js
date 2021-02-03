@@ -193,23 +193,23 @@ describe(`Followed Agents Endpoints`, () => {
       .then(() => dbTableTransactions.alterAgentsBrokerageFkey(db))
     });
 
-    context(`GET /api/user/:id/followed-agents`, () => {
+    context(`GET /api/followed-agent/:userId`, () => {
       it(`responds with 200 and an empty list`, () => {
         const userId = 1;
 
         return supertest(app)
-          .get(`/api/user/${userId}/followed-agents`)
+          .get(`/api/followed-agent/${userId}`)
           .set(auth, token)
           .expect(200, [])
       })
     });
 
-    context(`GET /api/user/:id/followed-agents`, () => {
+    context(`GET /api/followed-agent/:userId`, () => {
       it(`responds with 404`, () => {
         const userId = 123456789;
 
         return supertest(app)
-          .get(`/api/user/${userId}/followed-agents`)
+          .get(`/api/followed-agent/${userId}`)
           .set(auth, token)
           .expect(404, {error: { message: `User does not exist`}})
       })
@@ -226,13 +226,13 @@ describe(`Followed Agents Endpoints`, () => {
       .then(() => dbTableTransactions.insertFollowedAgents(db))
     });
 
-    context(`GET /api/user/:id/followed-agents`, () => {
+    context(`GET /api/followed-agent/:userId`, () => {
       it(`responds with 200 and all of the followed agents for a specific user`, () => {
           const userId = 2;
           expectedFollowedAgents = testFollowedAgents.filter(a => userId === a.username_id);
         
           return supertest(app)
-            .get(`/api/user/${userId}/followed-agents`)
+            .get(`/api/followed-agent/${userId}`)
             .set(auth, token)
             .expect(200, expectedFollowedAgents)
       });
