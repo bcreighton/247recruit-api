@@ -7,7 +7,6 @@ const followedAgentRouter = express.Router();
 followedAgentRouter
     .route('/:userId')
     .get((req, res, next) => {
-        debugger;
         const knexInstance = req.app.get('db');
         const { userId } = req.params;
         

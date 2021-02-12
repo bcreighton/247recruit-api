@@ -73,7 +73,7 @@ noteRouter
                 }
                 return res.json({
                     id: note.id,
-                    timestamp: note.timestamp,
+                    timestamp: new Date(note.timestamp),
                     title: xss(note.title),
                     content: xss(note.content),
                     username_id: note.username_id,

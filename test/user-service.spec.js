@@ -45,6 +45,7 @@ describe(`User service object`, () => {
                     expect(actual).to.eql({
                         id: thirdId,
                         username: thirdTestUser.username,
+                        password: thirdTestUser.password,
                         first_name: thirdTestUser.first_name,
                         last_name: thirdTestUser.last_name,
                         email: thirdTestUser.email,
@@ -68,6 +69,7 @@ describe(`User service object`, () => {
                     expect(user).to.eql({
                         id: idOfUserToUpdate,
                         username: user.username,
+                        password: user.password,
                         first_name: user.first_name,
                         last_name: user.last_name,
                         ...newUserData
@@ -105,6 +107,7 @@ describe(`User service object`, () => {
         it(`insertUser() inserts a new user and resolves the new user with an id`, () => {
             const newUser = {
                 username: 'Test User',
+                password: 'abc123',
                 first_name: 'Test',
                 last_name: 'User',
                 email: 'testuser@testuser.com',
@@ -117,6 +120,7 @@ describe(`User service object`, () => {
                     expect(actual).that.eql({
                         id: 1,
                         username: newUser.username,
+                        password: newUser.password,
                         first_name: newUser.first_name,
                         last_name: newUser.last_name,
                         email: newUser.email,

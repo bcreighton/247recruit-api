@@ -107,6 +107,8 @@ describe(`Agent Endpoints`, () => {
     })
 });
 
+//===============================================================
+
 describe(`User Endpoints`, () => {
   let db;
   const auth = 'Authorization';
@@ -149,6 +151,24 @@ describe(`User Endpoints`, () => {
           .get(`/api/user/${userId}`)
           .set(auth, token)
           .expect(404, {error: { message: `User does not exist`}})
+      })
+    })
+
+    context.only(`POST /user`, () => {
+      it(`creates a new user, responding with 201 and the new user`, () => {
+        return supertest(app)
+          .post(`/api/user`)
+          .set(auth, token)
+          .send({
+            username: "testNewUser",
+            password: "testPassword",
+            first_name: "test",
+            last_name: "user",
+            email: "testnewuser@user.com",
+            phone: "927-708-1215",
+            brokerage: 2
+          })
+          .expect(201)
       })
     })
   })
@@ -357,7 +377,7 @@ describe(`Note Endpoints`, () => {
       })
     })
 
-    context(`GET /api/note/:note-id`, () => {
+    context.skip(`GET /api/note/:note-id`, () => {
       it(`responds with 200 and the specific note`, () => {
         const noteId = 2;
         const expectedNote = testNotes[noteId -1];

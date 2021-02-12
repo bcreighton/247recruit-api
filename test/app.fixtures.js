@@ -78,6 +78,7 @@ module.exports = {
         {
             id: 1,
             username: "srogan0",
+            password: "abc123",
             first_name: "Sean",
             last_name: "Rogan",
             email: "srogan0@springer.com",
@@ -87,6 +88,7 @@ module.exports = {
         {
             id: 2,
             username: "glashford1",
+            password: "abc123",
             first_name: "Graig",
             last_name: "Lashford",
             email: "glashford1@mapy.cz",
@@ -96,6 +98,7 @@ module.exports = {
         {
             id: 3,
             username: "mdemaid2",
+            password: "abc123",
             first_name: "Man",
             last_name: "Demaid",
             email: "mdemaid2@icq.com",
@@ -123,7 +126,7 @@ module.exports = {
         }, 
         {
             id: 3,
-            timestamp: '2017-10-25T13:07:42.000Z',
+            timestamp: '2017-10-25T19:07:42.000Z',
             title: "ornare consequat",
             content: "Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque.",
             username_id: 2,
@@ -193,6 +196,7 @@ module.exports = {
         user: {
             id: 911,
             username: 'Naughty Naughty <script>alert("xss");</script>',
+            password: 'Naughty Password <script>alert("xss");</script>',
             first_name: "Sean",
             last_name: "Rogan",
             email: "srogan0@springer.com",

@@ -1,4 +1,4 @@
-const {testAgents, testBrokerages, testUsers, testNotes, testFollowedAgents} = require('./fixtures');
+const {testAgents, testBrokerages, testUsers, testNotes, testFollowedAgents} = require('./app.fixtures');
 
 const dbTableTransactions = {
     cleanDB(db) {
@@ -41,7 +41,7 @@ const dbTableTransactions = {
             })
         })
         .then(() => {
-            return db.schema.table('followed_agents', table => {
+            return db.schema.table('notes', table => {
                 table.foreign('username_id')
                     .references('users.id');
                 table.foreign('agent_id')
@@ -49,7 +49,7 @@ const dbTableTransactions = {
             })
         })
         .then(() => {
-            return db.schema.table('notes', table => {
+            return db.schema.table('followed_agents', table => {
                 table.foreign('username_id')
                     .references('users.id');
                 table.foreign('agent_id')
