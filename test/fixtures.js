@@ -110,7 +110,6 @@ module.exports = {
     testNotes: [
         {
             id: 1,
-            timestamp: new Date('2016-01-03T13:43:46.000Z'),
             title: "enim blandit mi in",
             content: "Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat. Nulla nisl. Nunc nisl.",
             username_id: 1,
@@ -118,7 +117,6 @@ module.exports = {
         }, 
         {
             id: 2,
-            timestamp: new Date('2017-01-01T03:00:10.000Z'),
             title: "adipiscing elit",
             content: "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem. Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo.",
             username_id: 2,
@@ -126,7 +124,6 @@ module.exports = {
         }, 
         {
             id: 3,
-            timestamp: new Date('2017-10-25T13:07:42.000Z'),
             title: "ornare consequat",
             content: "Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque.",
             username_id: 2,
@@ -134,7 +131,6 @@ module.exports = {
         }, 
         {
             id: 4,
-            timestamp: new Date('2018-02-24T18:44:53.000Z'),
             title: "turpis enim",
             content: "Vestibulum sed magna at nunc commodo placerat.",
             username_id: 3,
@@ -142,7 +138,6 @@ module.exports = {
         }, 
         {
             id: 5,
-            timestamp: new Date('2020-05-26T03:10:02.000Z'),
             title: "fusce consequat nulla",
             content: "Aenean fermentum.",
             username_id: 1,
@@ -150,7 +145,6 @@ module.exports = {
         }, 
         {
             id: 6,
-            timestamp: new Date('2017-08-24T18:06:56.000Z'),
             title: "in faucibus orci",
             content: "Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.",
             username_id: 2,

@@ -56,26 +56,31 @@ const dbTableTransactions = {
                     .references('agents.id');
             })
         })
+        // RESET AUTO INCREMEMENT VALUES OF ALL TABLES
     },
 
     insertAgentData(db) {
         return db.into('agents')
             .insert(testAgents)
+            .then(() => db.raw(`SELECT setval('agents_id_seq', (SELECT MAX(id) FROM agents))`))
     },
 
     insertBrokerageData(db) {
         return db.into('brokerages')
                 .insert(testBrokerages)
+                .then(() => db.raw(`SELECT setval('brokerages_id_seq', (SELECT MAX(id) FROM brokerages))`))
     },
 
     insertUserData(db) {
         return db.into('users')
             .insert(testUsers)
+            .then(() => db.raw(`SELECT setval('users_id_seq', (SELECT MAX(id) FROM users))`))
     },
 
     insertNoteData(db) {
         return db.into('notes')
             .insert(testNotes)
+            .then(() => db.raw(`SELECT setval('notes_id_seq', (SELECT MAX(id) FROM notes))`))
     },
 
     insertFollowedAgents(db) {

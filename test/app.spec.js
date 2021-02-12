@@ -153,24 +153,6 @@ describe(`User Endpoints`, () => {
           .expect(404, {error: { message: `User does not exist`}})
       })
     })
-
-    context.only(`POST /user`, () => {
-      it(`creates a new user, responding with 201 and the new user`, () => {
-        return supertest(app)
-          .post(`/api/user`)
-          .set(auth, token)
-          .send({
-            username: "testNewUser",
-            password: "testPassword",
-            first_name: "test",
-            last_name: "user",
-            email: "testnewuser@user.com",
-            phone: "927-708-1215",
-            brokerage: 2
-          })
-          .expect(201)
-      })
-    })
   })
 
   describe(`Given there are users in the database`, () => {
@@ -218,6 +200,43 @@ describe(`User Endpoints`, () => {
           .get(`/api/user/${userId}`)
           .set(auth, token)
           .expect(200, expectedUser)
+      })
+    })
+
+    context(`POST /api/user`, () => {
+      it(`creates a new user, responding with 201 and the new user`, () => {
+        const newUser = {
+          username: "testNewUser",
+          password: "testPassword",
+          first_name: "test",
+          last_name: "user",
+          email: "testnewuser@user.com",
+          phone: "927-708-1215",
+          brokerage: 2
+        }
+
+        return supertest(app)
+          .post(`/api/user`)
+          .set(auth, token)
+          .send(newUser)
+          .expect(201)
+          .expect(res => {
+            expect(res.body.username).to.eql(newUser.username);
+            expect(res.body.password).to.eql(newUser.password);
+            expect(res.body.first_name).to.eql(newUser.first_name);
+            expect(res.body.last_name).to.eql(newUser.last_name);
+            expect(res.body.email).to.eql(newUser.email);
+            expect(res.body.phone).to.eql(newUser.phone);
+            expect(res.body.brokerage).to.eql(newUser.brokerage);
+            expect(res.body).to.have.property('id');
+            expect(res.headers.location).to.eql(`/api/user/${res.body.id}`)
+          })
+          .then(postRes => 
+            supertest(app)
+              .get(`/api/user/${postRes.body.id}`)
+              .set(auth, token)
+              .expect(postRes.body)
+            )
       })
     })
   })
@@ -377,15 +396,62 @@ describe(`Note Endpoints`, () => {
       })
     })
 
-    context.skip(`GET /api/note/:note-id`, () => {
-      it(`responds with 200 and the specific note`, () => {
+    context(`GET /api/note/:note-id`, () => {
+      it(`responds with 200 and the specific note`, function() {
+        this.retries(3)
+
         const noteId = 2;
         const expectedNote = testNotes[noteId -1];
 
         return supertest(app)
           .get(`/api/note/${noteId}`)
           .set(auth, token)
-          .expect(200, expectedNote)
+          .expect(200)
+          .expect(res => {
+            expect(res.body.title).to.eql(expectedNote.title);
+            expect(res.body.content).to.eql(expectedNote.content);
+            expect(res.body.username_id).to.eql(expectedNote.username_id);
+            expect(res.body.agent_id).to.eql(expectedNote.agent_id);
+            expect(res.body).to.have.property('id');
+            const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+            const actual = new Date(res.body.timestamp).toLocaleString();
+            expect(actual).to.eql(expected);
+          })
+      })
+    })
+
+    context(`POST /api/note`, () => {
+      it(`creates a note, responding with 201 and the new note id`, function() {
+        this.retries(3);
+
+        const newNote = {
+          title: 'Test new note',
+            content: 'Test new note content...',
+            username_id: 1,
+            agent_id: 2
+        }
+        return supertest(app)
+          .post(`/api/note`)
+          .set(auth, token)
+          .send(newNote)
+          .expect(201)
+          .expect(res => {
+            expect(res.body.title).to.eql(newNote.title);
+            expect(res.body.content).to.eql(newNote.content);
+            expect(res.body.username_id).to.eql(newNote.username_id);
+            expect(res.body.agent_id).to.eql(newNote.agent_id);
+            expect(res.body).to.have.property('id');
+            expect(res.headers.location).to.eql(`/api/note/${res.body.id}`);
+            const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+            const actual = new Date(res.body.timestamp).toLocaleString();
+            expect(actual).to.eql(expected);
+          })
+          .then(postRes => 
+            supertest(app)
+              .get(`/api/note/${postRes.body.id}`)
+              .set(auth, token)
+              .expect(postRes.body)
+          )
       })
     })
   })

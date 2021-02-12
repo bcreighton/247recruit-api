@@ -33,29 +33,28 @@ noteRouter
             })
             .catch(next);
     })
-    .post(bodyParser, (req, res) => {
-        const { userId, agentId, title, content } = req.body;
+    .post(bodyParser, (req, res, next) => {
+        const { username_id, agent_id, title, content } = req.body;
+        const newNote = { username_id, agent_id, title, content };
 
-        if (!userId) res.status(400).send('User Id is required');
-        if (!agentId) res.status(400).send('Agent Id is required');
+        if (!username_id) res.status(400).send('User Id is required');
+        if (!agent_id) res.status(400).send('Agent Id is required');
         if (!title) res.status(400).send('Title is required');
         if (!content) res.status(400).send('Content is required');
 
         if (title.length < 3) res.status(400).send('Title must be at least 3 characters long');
         if (content.length < 5) res.status(400).send('Content must be at least 5 characters long');
 
-        const id = uuid();
-        const newNote = {
-            id,
-            userId,
-            agentId,
-            title,
-            content
-        };
-
-        notes.push(newNote);
-
-        res.status(201).send('New note added!');
+        NoteService.insertNote(
+            req.app.get('db'),
+            newNote
+        )
+            .then(note => {
+                res.status(201)
+                .location(`/api/note/${note.id}`)
+                .json(note)
+            })
+            .catch(next)
     });
 
 noteRouter

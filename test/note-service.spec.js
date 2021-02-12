@@ -37,7 +37,7 @@ describe(`Note service object`, () => {
                 });
         });
 
-        it.skip(`getById() resolves a note by id from the 'notes' table`, () => {
+        it(`getById() resolves a note by id from the 'notes' table`, () => {
             const thirdId = 3;
             const thirdTestNote = testNotes[thirdId -1];
 
@@ -45,12 +45,12 @@ describe(`Note service object`, () => {
                 .then(actual => {
                     expect(actual).to.eql({
                         id: thirdId,
-                        timestamp: new Date(thirdTestNote.timestamp),
                         title: thirdTestNote.title,
                         content: thirdTestNote.content,
                         username_id: thirdTestNote.username_id,
-                        agent_id: thirdTestNote.agent_id
-                    })
+                        agent_id: thirdTestNote.agent_id,
+                        timestamp: new Date(actual.timestamp)
+                    });
                 })
         })
 
@@ -74,7 +74,7 @@ describe(`Note service object`, () => {
                 })
         })
 
-        it(`deleteNote() removes a note by id from the 'notes' table`, () => {
+        it.skip(`deleteNote() removes a note by id from the 'notes' table`, () => {
             const noteId = 3;
 
             return NoteService.deleteNote(db, noteId)
