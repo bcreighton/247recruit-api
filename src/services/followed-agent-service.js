@@ -10,6 +10,7 @@ const FollowedAgentService = {
             .where('username_id', id)
     },
     insertFollowedAgent(knex, newFollowedAgent) {
+        debugger;
         return knex
             .insert(newFollowedAgent)
             .into('followed_agents')

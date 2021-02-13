@@ -3,6 +3,7 @@ const UserService = require('../services/user-service')
 const FollowedAgentsService = require('../services/followed-agent-service')
 
 const followedAgentRouter = express.Router();
+const bodyParser = express.json();
 
 followedAgentRouter
     .route('/:userId')
@@ -34,6 +35,26 @@ followedAgentRouter
             })
             .catch(next)
         
+    })
+    .post(bodyParser, (req, res, next) => {
+        debugger;
+        const {agent_id, username_id } = req.body;
+        const newFollowedAgent = {agent_id, username_id}
+
+        if (!username_id) res.status(400).send('User Id is required');
+        if (!agent_id) res.status(400).send('Agent Id is required');
+
+        debugger;
+
+        FollowedAgentsService.insertFollowedAgent(
+            req.app.get('db'),
+            newFollowedAgent
+        )
+            .then(followedAgent => {
+                res.status(201)
+                .json(followedAgent)
+            })
+            .catch(next)
     })
     .delete((req, res, next) => {
         

@@ -1,8 +1,8 @@
+const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const UserService = require('../services/user-service')
-const FollowedAgentsService = require('../services/followed-agent-service')
 
 const userRouter = express.Router();
 const bodyParser = express.json();
@@ -41,7 +41,7 @@ userRouter
           .then(user => {
             res
               .status(201)
-              .location(`/api/user/${user.id}`)
+              .location(path.posix.join(req.originalUrl, `${user.id}`))
               .json(user)
           })
           .catch(next)

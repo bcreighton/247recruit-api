@@ -368,6 +368,34 @@ describe(`Followed Agents Endpoints`, () => {
       });
     });
 
+    context(`POST /api/followed-agent/:userId`, () => {
+      it(`responds with 201 and the new followed agent relationship`, () => {
+        const userId = 2;
+        const newFollowedAgent = {
+          agent_id: 2,
+          username_id: userId,
+        }
+
+        return supertest(app)
+          .post(`/api/followed-agent/${userId}`)
+          .set(auth, token)
+          .send(newFollowedAgent)
+          .expect(201)
+          .expect(res => {
+            expect(res.body.agent_id).to.eql(newFollowedAgent.agent_id);
+            expect(res.body.username_id).to.eql(newFollowedAgent.username_id);
+          })
+          .then(postRes =>
+            supertest(app)
+              .get(`/api/followed-agent/${userId}`)  
+              .set(auth, token)
+              .expect(postRes => {
+                expect(postRes.body).to.deep.include(newFollowedAgent)
+              })
+          )
+      })
+    })
+
     context(`DELETE /api/followed-agent/:userId`, () => {
       it(`responds with 204 and removes the followed agent relationship`, () => {
         const userId = 3;

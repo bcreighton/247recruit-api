@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const { v4: uuid } = require('uuid');
@@ -34,7 +35,7 @@ noteRouter
         )
             .then(note => {
                 res.status(201)
-                .location(`/api/note/${note.id}`)
+                .location(path.posix.join(req.originalUrl, `${note.id}`))
                 .json(note)
             })
             .catch(next)
