@@ -19,6 +19,7 @@ const FollowedAgentService = {
             })
     },
     deleteFollowedAgent(knex, usernameId, agentId) {
+        
         return knex('followed_agents')
             .where({
                 agent_id: agentId, 

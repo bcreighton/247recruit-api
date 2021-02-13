@@ -6,12 +6,11 @@ const followedAgentRouter = express.Router();
 
 followedAgentRouter
     .route('/:userId')
-    .get((req, res, next) => {
-        const knexInstance = req.app.get('db');
-        const { userId } = req.params;
-        
-
-        UserService.getById(knexInstance, userId)
+    .all((req, res, next) => {
+        UserService.getById(
+            req.app.get('db'),
+            req.params.userId
+        )
         .then(user => {
             
             if (!user) {
@@ -19,14 +18,34 @@ followedAgentRouter
                 error: {message: `User does not exist`}
             })
             }
-            
-            FollowedAgentsService.getByUsernameId(knexInstance, userId)
+            res.user = user;
+            next();
+        })
+        .catch(next)
+    })
+    .get((req, res, next) => {
+        debugger;
+        FollowedAgentsService.getByUsernameId(
+            req.app.get('db'), 
+            req.params.userId
+        )
             .then(agents => {
                 return res.json(agents)
             })
             .catch(next)
+        
+    })
+    .delete((req, res, next) => {
+        
+        FollowedAgentsService.deleteFollowedAgent(
+            req.app.get('db'),
+            req.params.userId,
+            req.body.agent_id
+        )
+        .then(() => {
+            res.status(204).end()
         })
         .catch(next)
-})
+    })
 
 module.exports = followedAgentRouter;

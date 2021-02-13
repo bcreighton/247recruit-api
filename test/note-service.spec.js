@@ -30,12 +30,22 @@ describe(`Note service object`, () => {
             .then(() => dbTableTransactions.insertNoteData(db))
         });
 
-        it.skip(`getNotes() resolves all notes from the 'notes' table`, () => {
+        it(`getNotes() resolves all notes from the 'notes' table`, () => {
             return NoteService.getNotes(db)
                 .then(actual => {
-                    expect(actual).to.eql(testNotes);
-                });
-        });
+                    const notes = actual;
+                    for(let i = 0; i < testNotes.length; i++) {
+                        expect(notes[i].title).to.eql(testNotes[i].title);
+                        expect(notes[i].content).to.eql(testNotes[i].content);
+                        expect(notes[i].username_id).to.eql(testNotes[i].username_id);
+                        expect(notes[i].agent_id).to.eql(testNotes[i].agent_id);
+                        expect(notes[i]).to.have.property('id');
+                        const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+                        const actual = new Date(notes[i].timestamp).toLocaleString();
+                        expect(actual).to.eql(expected);
+                    }
+            })
+        })
 
         it(`getById() resolves a note by id from the 'notes' table`, () => {
             const thirdId = 3;
@@ -74,14 +84,23 @@ describe(`Note service object`, () => {
                 })
         })
 
-        it.skip(`deleteNote() removes a note by id from the 'notes' table`, () => {
+        it(`deleteNote() removes a note by id from the 'notes' table`, () => {
             const noteId = 3;
 
             return NoteService.deleteNote(db, noteId)
                 .then(() => NoteService.getNotes(db))
                 .then(allNotes => {
-                    const expected = testNotes.filter(n => n.id !== noteId);
-                    expect(allNotes).to.eql(expected)
+                    const expectedNotes = testNotes.filter(n => n.id !== noteId);
+                    for(let i = 0; i < expectedNotes.length; i++) {
+                        expect(allNotes[i].title).to.eql(expectedNotes[i].title);
+                        expect(allNotes[i].content).to.eql(expectedNotes[i].content);
+                        expect(allNotes[i].username_id).to.eql(expectedNotes[i].username_id);
+                        expect(allNotes[i].agent_id).to.eql(expectedNotes[i].agent_id);
+                        expect(allNotes[i]).to.have.property('id');
+                        const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+                        const actual = new Date(allNotes[i].timestamp).toLocaleString();
+                        expect(actual).to.eql(expected);
+                    }
                 })
         })
     });

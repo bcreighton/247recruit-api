@@ -11,6 +11,7 @@ const dbTableTransactions = require('./db-table-transactions');
 const knex = require('knex');
 const supertest = require("supertest");
 const app = require("../src/app");
+const followedAgentRouter = require("../src/routers/followed-agent-router");
 
 describe(`Agent Endpoints`, () => {
     let db;
@@ -153,6 +154,19 @@ describe(`User Endpoints`, () => {
           .expect(404, {error: { message: `User does not exist`}})
       })
     })
+
+    context(`DELETE /api/user/:id`, () => {
+      it(`responds with 404`, () => {
+        const userId = 123456;
+  
+        return supertest(app)
+          .delete(`/api/user/${userId}`)
+          .set(auth, token)
+          .expect(404, {error: {
+            message: `User does not exist`
+          }})
+      })
+    })
   })
 
   describe(`Given there are users in the database`, () => {
@@ -239,6 +253,24 @@ describe(`User Endpoints`, () => {
             )
       })
     })
+
+    context(`DELETE /api/user/:id`, () => {
+      it(`responds with 204 and removes the user`, () => {
+        const idToRemove = 2; 
+        const expectedUsers = testUsers.filter(note => note.id !== idToRemove)
+
+        return supertest(app)
+          .delete(`/api/user/${idToRemove}`)
+          .set(auth, token)
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/user`)
+              .set(auth, token)
+              .expect(expectedUsers)
+          )
+      })
+    })
   })
 });
 
@@ -296,6 +328,22 @@ describe(`Followed Agents Endpoints`, () => {
           .expect(404, {error: { message: `User does not exist`}})
       })
     })
+
+    context(`DELETE /api/followed-agent/:userid`, () => {
+      it(`responds with 404 when user does not exist`, () => {
+        const userId = 123456;
+        const followedAgent = {
+            agent_id: 3,
+            username_id: userId
+        }
+
+        return supertest(app)
+          .delete(`/api/followed-agent/${userId}`)
+          .set(auth, token)
+          .send(followedAgent)
+          .expect(404, {error: { message: `User does not exist`}})
+      })
+    })
   })
 
   describe(`Given there are followed agents in the database`, () => {
@@ -319,6 +367,31 @@ describe(`Followed Agents Endpoints`, () => {
             .expect(200, expectedFollowedAgents)
       });
     });
+
+    context(`DELETE /api/followed-agent/:userId`, () => {
+      it(`responds with 204 and removes the followed agent relationship`, () => {
+        const userId = 3;
+        const followedAgentToRemove = {
+            agent_id: 3,
+            username_id: 3
+        };
+        const expectedFollowedAgents = testFollowedAgents.filter(fa =>
+            fa.username_id === userId && fa.agent_id !== followedAgentToRemove.agent_id
+          )
+        
+        return supertest(app)
+          .delete(`/api/followed-agent/${userId}`)
+          .set(auth, token)
+          .send(followedAgentToRemove)
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/followed-agent/${userId}`)
+              .set(auth, token)
+              .expect(expectedFollowedAgents)
+          )
+      })
+    })
   })
 });
 
@@ -363,6 +436,16 @@ describe(`Note Endpoints`, () => {
           .get(`/api/note/${noteId}`)
           .set(auth, token)
           .expect(404, {error: { message: `Note does not exist`}})
+      })
+    })
+
+    context(`DELETE /api/note/:id`, () => {
+      it(`responds with 404`, () => {
+        const noteId = 123456;
+        return supertest(app)
+          .delete(`/api/note/${noteId}`)
+          .set(auth, token)
+          .expect(404, {error: {message: `Note does not exist`}})
       })
     })
   })
@@ -451,6 +534,35 @@ describe(`Note Endpoints`, () => {
               .get(`/api/note/${postRes.body.id}`)
               .set(auth, token)
               .expect(postRes.body)
+          )
+      })
+    })
+
+    context(`DELETE /api/note/:note-id`, () => {
+      it(`responds with 204 and removes the note`, () => {
+        const idToRemove = 2;
+        const expectedNotes = testNotes.filter(note => note.id !== idToRemove)
+
+        return supertest(app)
+          .delete(`/api/note/${idToRemove}`)
+          .set(auth, token)
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/note`)
+              .set(auth, token)
+              .expect(getRes => {
+                for(let i = 0; i < expectedNotes.length; i++) {
+                  expect(getRes.body[i].title).to.eql(expectedNotes[i].title);
+                  expect(getRes.body[i].content).to.eql(expectedNotes[i].content);
+                  expect(getRes.body[i].username_id).to.eql(expectedNotes[i].username_id);
+                  expect(getRes.body[i].agent_id).to.eql(expectedNotes[i].agent_id);
+                  expect(getRes.body[i]).to.have.property('id');
+                  const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+                  const actual = new Date(getRes.body[i].timestamp).toLocaleString();
+                  expect(actual).to.eql(expected);
+                }
+              })
           )
       })
     })
