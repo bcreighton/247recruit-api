@@ -87,5 +87,29 @@ userRouter
         })
         .catch(next)
     })
+    .patch(bodyParser, (req, res, next) => {
+      const {email, password, phone, brokerage} = req.body;
+      const userToUpdate = {email, password, phone, brokerage}
+
+      const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
+
+      if (numberOfValues === 0 ) {
+        return res.status(400).json({
+          error: {
+            message: `Request body must contain either 'password', 'email', 'phone', or 'brokerage'`
+          }
+        })
+      }
+
+      UserService.updateUser(
+        req.app.get('db'),
+        req.params.id,
+        userToUpdate,
+      )
+        .then(numRowsAffected => {
+          res.status(204).end()
+        })
+        .catch(next)
+    })
 
 module.exports = userRouter;

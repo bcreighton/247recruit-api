@@ -167,6 +167,17 @@ describe(`User Endpoints`, () => {
           }})
       })
     })
+
+    context(`PATCH /api/user/:id`, () => {
+      it(`responds with 404`, () => {
+        const userId = 123456;
+
+        return supertest(app)
+          .patch(`/api/user/${userId}`)
+          .set(auth, token)
+          .expect(404, {error: { message: `User does not exist`}})
+      })
+    })
   })
 
   describe(`Given there are users in the database`, () => {
@@ -271,8 +282,77 @@ describe(`User Endpoints`, () => {
           )
       })
     })
+
+    context(`PATCH /api/user/:id`, () => {
+      it(`responds with 400 when no required fields supplied`, () => {
+        const idToUpdate = 2;
+
+        return supertest(app)
+          .patch(`/api/user/${idToUpdate}`)
+          .set(auth, token)
+          .send({irrelevantField: 'foo'})
+          .expect(400, {
+            error: {message: `Request body must contain either 'password', 'email', 'phone', or 'brokerage'`}
+          })
+      })
+      
+      it(`responds with 204 and updates the user`, () => {
+        const idToUpdate = 2;
+        const updateUser = {
+            password: 'updated user password',
+            email: "update@email.com",
+            phone: '303-111-1111',
+            brokerage: 2
+        }
+        const expectedUser = {
+          ...testUsers[idToUpdate-1],
+          ...updateUser,
+        }
+
+        return supertest(app)
+          .patch(`/api/user/${idToUpdate}`)
+          .set(auth, token)
+          .send(updateUser)
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/user/${idToUpdate}`)
+              .set(auth, token) 
+              .expect(expectedUser)
+          )
+      })
+
+      it(`responds with 204 when updateing a subset of fields`, () => {
+        const idToUpdate = 2;
+        const updateUser = {
+          email: 'update@email.com'
+        }
+
+        const expectedUser = {
+          ...testUsers[idToUpdate - 1],
+          ...updateUser,
+        }
+
+        return supertest(app)
+          .patch(`/api/user/${idToUpdate}`)
+          .set(auth, token)
+          .send({
+            ...updateUser,
+            fieldToIgnore: 'should note be in the GET response'
+          })
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/user/${idToUpdate}`)
+              .set(auth, token)
+              .expect(expectedUser)
+          )
+      })
+    })
   })
 });
+
+// ================================================================
 
 describe(`Followed Agents Endpoints`, () => {
   let db;
@@ -422,6 +502,8 @@ describe(`Followed Agents Endpoints`, () => {
     })
   })
 });
+
+// ================================================================
 
 describe(`Note Endpoints`, () => {
   let db;
@@ -594,8 +676,92 @@ describe(`Note Endpoints`, () => {
           )
       })
     })
+
+    context(`PATCH /api/note/:note-id`, () => {
+      it(`responds with 400 when no required fields supplied`, () => {
+        const idToUpdate = 2;
+
+        return supertest(app)
+          .patch(`/api/note/${idToUpdate}`)
+          .set(auth, token)
+          .send({irrelevantField: 'foo'})
+          .expect(400, {
+            error: {message: `Request body must contain either 'title' or 'content'`}
+          })
+      })
+
+      it(`responds with 204 and updates the note`, () => {
+        const idToUpdate = 2;
+        const updateNote = {
+            title: 'updated title',
+            content: 'updated content...',
+        }
+        const expectedNote = {
+          ...testNotes[idToUpdate - 1],
+          ...updateNote,
+        }
+
+        return supertest(app)
+          .patch(`/api/note/${idToUpdate}`)
+          .set(auth, token)
+          .send(updateNote)
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/note/${idToUpdate}`)
+              .set(auth, token)
+              .expect(getRes => {
+                expect(getRes.body.title).to.eql(expectedNote.title);
+                expect(getRes.body.content).to.eql(expectedNote.content);
+                expect(getRes.body).to.have.property('id')
+                expect(getRes.body).to.have.property('username_id')
+                expect(getRes.body).to.have.property('agent_id')
+                const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+                const actual = new Date(getRes.body.timestamp).toLocaleString();
+                expect(actual).to.eql(expected);
+              })
+          )
+      })
+
+      it(`responds with 204 when updating a subset of fields`, () => {
+        const idToUpdate = 2;
+        const updateNote = {
+          content: 'updated content'
+        }
+        const expectedNote = {
+          ...testNotes[idToUpdate - 1],
+          ...updateNote,
+        }
+
+        return supertest(app)
+          .patch(`/api/note/${idToUpdate}`)
+          .set(auth, token)
+          .send({
+            ...updateNote,
+            fieldToignore: 'should not be in the GET response'
+          })
+          .expect(204)
+          .then(res => 
+            supertest(app)
+              .get(`/api/note/${idToUpdate}`)  
+              .set(auth, token)
+              .expect(getRes => {
+                expect(getRes.body.title).to.eql(expectedNote.title);
+                expect(getRes.body.content).to.eql(expectedNote.content);
+                expect(getRes.body).to.have.property('id')
+                expect(getRes.body).to.have.property('username_id')
+                expect(getRes.body).to.have.property('agent_id')
+                const expected = new Date().toLocaleString('en', { timeZone: 'UTC' });
+                const actual = new Date(getRes.body.timestamp).toLocaleString();
+                expect(actual).to.eql(expected);
+              })
+          )
+      })
+    })
   })
-});
+})
+
+// ==================================================================================
 
 describe(`Brokerage Endpoints`, () => {
   let db;
