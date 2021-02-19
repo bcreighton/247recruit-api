@@ -6,6 +6,20 @@ const agentRouter = express.Router();
 handleSearch = (req, res, next) => {
     const { search = '', sort } = req.query;
     const knexInstance = req.app.get('db');
+    
+    // "name": "Blanca Klasen",
+    //     "license_num": 392389,
+    //     "email": "bklasene@tmall.com",
+    //     "phone": "585-779-3232",
+    //     "license_exp": "2023-04-18T06:00:00.000Z",
+    //     "sponsor_date": "2018-03-15T06:00:00.000Z",
+    //     "list_units": 580,
+    //     "list_vol": "767722154.35",
+    //     "sell_units": 282,
+    //     "sell_vol": "41387827.60",
+    //     "tot_units": 1063,
+    //     "tot_vol": "101539426.19",
+    //     "brokerage": 7
 
     AgentService.getAgents(knexInstance)
             .then(agents => {
