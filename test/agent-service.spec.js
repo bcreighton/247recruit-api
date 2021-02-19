@@ -53,7 +53,7 @@ describe(`Agent service object`, () => {
                 .then(actual => {
                     expect(actual).to.eql({
                         id: thirdId,
-                        agent_name: thirdTestAgent.agent_name,
+                        name: thirdTestAgent.name,
                         license_num: thirdTestAgent.license_num,
                         email: thirdTestAgent.email,
                         phone: thirdTestAgent.phone,

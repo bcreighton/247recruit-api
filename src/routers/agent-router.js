@@ -3,16 +3,48 @@ const xss = require('xss')
 const AgentService = require('../services/agent-service');
 const agentRouter = express.Router();
 
-agentRouter
-    .route('/')
-    .get((req, res, next) => {
-        const knexInstance = req.app.get('db');
-        AgentService.getAgents(knexInstance)
+handleSearch = (req, res, next) => {
+    const { search = '', sort } = req.query;
+    const knexInstance = req.app.get('db');
+
+    AgentService.getAgents(knexInstance)
             .then(agents => {
-                res.json(agents)
+                if (sort) {
+                    if (!['name'].includes(sort)) {
+                    return res
+                        .status(400)
+                        .send('Sort must be name.');
+                    }
+                }
+            
+                let results = agents
+                    .filter( agent => 
+                        agent
+                            .name
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
+                    );
+            
+                if (sort) {
+                    results.sort((a, b) => {
+                    debugger;
+                    return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
+                    })
+                }
+            
+                if (results.length === 0) 
+                    res
+                        .status(400)
+                        .send(`There are no agents matching the search of '${search}', please try again.`)
+                
+                res.json(results)
             })
             .catch(next)
-    });
+}
+
+agentRouter
+    .route('/')
+    .get(handleSearch);
 
 agentRouter
     .route('/:id')
@@ -29,7 +61,7 @@ agentRouter
                 }
                 res.json({
                     id: agent.id,
-                    agent_name: xss(agent.agent_name),
+                    name: xss(agent.name),
                     license_num: agent.license_num,
                     email: xss(agent.email),
                     phone: agent.phone,

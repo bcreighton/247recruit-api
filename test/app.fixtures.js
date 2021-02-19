@@ -2,7 +2,7 @@ module.exports = {
     testAgents: [
         {
             id: 1,
-            agent_name: "Shanan",
+            name: "Shanan",
             license_num: 270801,
             email: "sstamp0@cnet.com",
             phone: "488-624-5979",
@@ -17,7 +17,7 @@ module.exports = {
         }, 
         {
             id: 2,
-            agent_name: "Christos",
+            name: "Christos",
             license_num: 616536,
             email: "cskpsey1@pagesperso-orange.fr",
             phone: "768-598-7152",
@@ -32,7 +32,7 @@ module.exports = {
         },
         {
             id: 3,
-            agent_name: "Penni",
+            name: "Penni",
             license_num: 977485,
             email: "ptregido2@globo.com",
             phone: "106-173-0218",
@@ -174,7 +174,7 @@ module.exports = {
     maliciousData: {
         agent: {
             id: 911,
-            agent_name: 'Naughty Naughty <script>alert("xss");</script>',
+            name: 'Naughty Naughty <script>alert("xss");</script>',
             license_num: 270801,
             email: "sstamp0@cnet.com",
             phone: "488-624-5979",

@@ -80,7 +80,7 @@ describe(`Agent Endpoints`, () => {
             .set(auth, token)
             .expect(200)
             .expect(res => {
-              expect(res.body.agent_name).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
+              expect(res.body.name).to.equal('Naughty Naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;')
             })
         })
       })
@@ -618,7 +618,7 @@ describe(`Note Endpoints`, () => {
         this.retries(3);
 
         const newNote = {
-          title: 'Test new note',
+            title: 'Test new note',
             content: 'Test new note content...',
             username_id: 1,
             agent_id: 2

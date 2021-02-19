@@ -4,7 +4,7 @@ TRUNCATE notes, followed_agents, users, brokerages, agents RESTART IDENTITY CASC
 -- insert all data into tables
 -- insert agents
 INSERT INTO agents
-    (agent_name, license_num, email, phone, license_exp, sponsor_date, list_units, list_vol, sell_units, sell_vol, tot_units, tot_vol)
+    (name, license_num, email, phone, license_exp, sponsor_date, list_units, list_vol, sell_units, sell_vol, tot_units, tot_vol)
     VALUES 
         ('Brewer Pech', 898367, 'bpech0@uol.com.br', '336-647-2318', '1/18/2021', '6/11/2003', 678, '455038262.91', 761, '34523699.77', 230, '68987221.18'),
         ('Rossie Veysey', 792265, 'rveysey1@moonfruit.com', '638-879-3302', '8/8/2021', '7/16/2006', 400, '324688746.79', 85, '37858152.60', 2211, '555562123.84'),
