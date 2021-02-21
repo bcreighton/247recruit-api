@@ -1,7 +1,8 @@
 const AgentService = {
     getAgents(knex) {
-        
-        return knex.select('*').from('agents')
+        return knex('agents')
+            .join('brokerages', 'brokerages.id', 'agents.brokerage')
+            .select('*')
     },
 
     getById(knex, id) {

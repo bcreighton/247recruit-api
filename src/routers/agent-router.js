@@ -6,28 +6,14 @@ const agentRouter = express.Router();
 handleSearch = (req, res, next) => {
     const { search = '', sort } = req.query;
     const knexInstance = req.app.get('db');
-    
-    // "name": "Blanca Klasen",
-    //     "license_num": 392389,
-    //     "email": "bklasene@tmall.com",
-    //     "phone": "585-779-3232",
-    //     "license_exp": "2023-04-18T06:00:00.000Z",
-    //     "sponsor_date": "2018-03-15T06:00:00.000Z",
-    //     "list_units": 580,
-    //     "list_vol": "767722154.35",
-    //     "sell_units": 282,
-    //     "sell_vol": "41387827.60",
-    //     "tot_units": 1063,
-    //     "tot_vol": "101539426.19",
-    //     "brokerage": 7
 
     AgentService.getAgents(knexInstance)
             .then(agents => {
                 if (sort) {
-                    if (!['name'].includes(sort)) {
+                    if (!['ascending', 'descending', 'volume', 'transactions'].includes(sort.toLowerCase())) {
                     return res
                         .status(400)
-                        .send('Sort must be name.');
+                        .send(`Sort must be 'Ascending', 'Descending', 'Volume' or 'Transactions'.`);
                     }
                 }
             
@@ -40,9 +26,19 @@ handleSearch = (req, res, next) => {
                     );
             
                 if (sort) {
+                    let sortOption = 
+                        (sort.toLowerCase() === 'ascending' || sort.toLowerCase() === 'descending')
+                            ? 'name'
+                            : (sort.toLowerCase() === 'transactions')
+                                ? 'tot_units'
+                                : 'tot_vol'
+
                     results.sort((a, b) => {
-                    debugger;
-                    return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0
+                        return (sort.toLowerCase() === 'descending' || 'transactions')
+                            ? b[sortOption] > a[sortOption] ? 1 : b[sortOption] < a[sortOption] ? -1 : 0
+                            : (sort.toLowerCase() === 'volume')
+                                ? parseFloat(b[sortOption]) > parseFloat(a[sortOption]) ? 1 : parseFloat(b[sortOption]) < parseFloat(a[sortOption]) ? -1 : 0
+                                : a[sortOption] > b[sortOption] ? 1 : a[sortOption] < b[sortOption] ? -1 : 0
                     })
                 }
             
@@ -50,7 +46,6 @@ handleSearch = (req, res, next) => {
                     res
                         .status(400)
                         .send(`There are no agents matching the search of '${search}', please try again.`)
-                
                 res.json(results)
             })
             .catch(next)
