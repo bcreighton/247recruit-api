@@ -4,7 +4,7 @@ const AgentService = require('../services/agent-service');
 const agentRouter = express.Router();
 
 handleSearch = (req, res, next) => {
-    const { search = '', sort } = req.query;
+    const { name = '', brokerage = '', sort } = req.query;
     const knexInstance = req.app.get('db');
 
     AgentService.getAgents(knexInstance)
@@ -16,29 +16,50 @@ handleSearch = (req, res, next) => {
                         .send(`Sort must be 'Ascending', 'Descending', 'Volume' or 'Transactions'.`);
                     }
                 }
+                debugger;
             
-                let results = agents
-                    .filter( agent => 
+                let results = (!name)
+                    ? agents.filter( agent => 
                         agent
-                            .name
+                            .brokerage
                             .toLowerCase()
-                            .includes(search.toLowerCase())
-                    );
+                            .includes(brokerage.toLowerCase())
+                        )
+                    : (!brokerage)
+                        ? agents.filter( agent =>
+                                agent
+                                    .name
+                                    .toLowerCase()
+                                    .includes(name.toLowerCase())
+                            )
+                        : agents.filter( agent => 
+                            agent
+                                .name
+                                .toLowerCase()
+                                .includes(name.toLowerCase())
+                            ).filter(
+                                agent =>
+                                agent
+                                    .brokerage
+                                    .toLowerCase()
+                                    .includes(brokerage.toLowerCase())
+                            )
             
                 if (sort) {
                     let sortOption = 
                         (sort.toLowerCase() === 'ascending' || sort.toLowerCase() === 'descending')
                             ? 'name'
                             : (sort.toLowerCase() === 'transactions')
-                                ? 'tot_units'
-                                : 'tot_vol'
+                                ? 'trans'
+                                : 'vol'
 
                     results.sort((a, b) => {
-                        return (sort.toLowerCase() === 'descending' || 'transactions')
-                            ? b[sortOption] > a[sortOption] ? 1 : b[sortOption] < a[sortOption] ? -1 : 0
-                            : (sort.toLowerCase() === 'volume')
-                                ? parseFloat(b[sortOption]) > parseFloat(a[sortOption]) ? 1 : parseFloat(b[sortOption]) < parseFloat(a[sortOption]) ? -1 : 0
-                                : a[sortOption] > b[sortOption] ? 1 : a[sortOption] < b[sortOption] ? -1 : 0
+                        return (sort.toLowerCase() === 'ascending')
+                            ? a[sortOption] > b[sortOption] ? 1 : a[sortOption] < b[sortOption] ? -1 : 0
+                            : (sort.toLowerCase() === 'descending' || 'transactions')
+                                ? b[sortOption] > a[sortOption] ? 1 : b[sortOption] < a[sortOption] ? -1 : 0
+                                : (sort.toLowerCase() === 'volume')
+                                    && parseFloat(b[sortOption]) > parseFloat(a[sortOption]) ? 1 : parseFloat(b[sortOption]) < parseFloat(a[sortOption]) ? -1 : 0
                     })
                 }
             
