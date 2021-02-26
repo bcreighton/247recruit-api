@@ -25,7 +25,6 @@ followedAgentRouter
         .catch(next)
     })
     .get((req, res, next) => {
-        debugger;
         FollowedAgentsService.getByUsernameId(
             req.app.get('db'), 
             req.params.userId
@@ -37,7 +36,6 @@ followedAgentRouter
         
     })
     .post(bodyParser, (req, res, next) => {
-        debugger;
         const {agent_id, username_id } = req.body;
         const newFollowedAgent = {agent_id, username_id}
 

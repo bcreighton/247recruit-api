@@ -16,7 +16,6 @@ handleSearch = (req, res, next) => {
                         .send(`Sort must be 'Ascending', 'Descending', 'Volume' or 'Transactions'.`);
                     }
                 }
-                debugger;
             
                 let results = (!name)
                     ? agents.filter( agent => 
@@ -79,12 +78,14 @@ agentRouter
 agentRouter
     .route('/:id')
     .get((req, res, next) => {
+        debugger;
         const knexInstance = req.app.get('db');
         const { id } = req.params;
         
         AgentService.getById(knexInstance, id)
             .then(agent => {
                 if (!agent) {
+                    debugger;
                     return res.status(404).json({
                         error: { message: `Agent doesn't exist`}
                     })

@@ -3,6 +3,13 @@ const NoteService = {
         return knex.select('*').from('notes')
     },
 
+    getAgentNotes(knex, id) {
+        return knex
+            .from('notes')
+            .select('*')
+            .where('agent_id', id)
+    },
+
     getById(knex, id) {
         return knex
             .from('notes')

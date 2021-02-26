@@ -102,6 +102,24 @@ noteRouter
                 res.status(204).end()
             })
             .catch(next)
+    });
+
+noteRouter
+    .route('/agent/:id')
+    .get((req, res, next) => {
+        NoteService.getAgentNotes(
+            req.app.get('db'), 
+            req.params.id
+        )
+        .then(notes => {
+            if (!notes) {
+                return res.status(404).json({
+                    error: { message: `You have no notes for this agent`}
+                })
+            }
+            res.json(notes)
+        })
+        .catch(next)
     })
 
 module.exports = noteRouter;
