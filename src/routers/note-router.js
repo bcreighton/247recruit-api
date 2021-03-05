@@ -117,6 +117,10 @@ noteRouter
                     error: { message: `You have no notes for this agent`}
                 })
             }
+
+            notes.sort((a, b) => {
+                return b['timestamp'] > a['timestamp'] ? 1 : b['timestamp'] < a['timestamp'] ? -1 : 0
+            })
             res.json(notes)
         })
         .catch(next)
