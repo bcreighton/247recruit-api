@@ -12,6 +12,7 @@ const AgentService = {
     },
 
     getById(knex, id) {
+        debugger;
         return knex
             .from('agents')
             .join('brokerages', 'brokerages.id', 'agents.brokerage')

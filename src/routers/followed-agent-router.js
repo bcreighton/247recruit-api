@@ -42,7 +42,7 @@ followedAgentRouter
         if (!username_id) res.status(400).send('User Id is required');
         if (!agent_id) res.status(400).send('Agent Id is required');
 
-        debugger;
+        
 
         FollowedAgentsService.insertFollowedAgent(
             req.app.get('db'),
