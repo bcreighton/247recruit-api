@@ -81,7 +81,7 @@ agentRouter
         
         const knexInstance = req.app.get('db');
         const { id } = req.params;
-        
+
         AgentService.getById(knexInstance, id)
             .then(agent => {
                 if (!agent) {

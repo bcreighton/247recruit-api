@@ -107,6 +107,7 @@ noteRouter
 noteRouter
     .route('/agent/:id')
     .get((req, res, next) => {
+        
         NoteService.getAgentNotes(
             req.app.get('db'), 
             req.params.id
