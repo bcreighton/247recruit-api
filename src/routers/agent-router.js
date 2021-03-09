@@ -96,15 +96,12 @@ agentRouter
                     license_num: agent.license_num,
                     email: xss(agent.email),
                     phone: agent.phone,
-                    license_exp: agent.license_exp,
-                    sponsor_date: agent.sponsor_date,
-                    list_units: agent.list_units,
-                    list_vol: agent.list_vol,
-                    sell_units: agent.sell_units,
-                    sell_vol: agent.sell_vol,
-                    tot_units: agent.tot_units,
-                    tot_vol: agent.tot_vol,
-                    brokerage: agent.brokerage
+                    trans: agent.trans,
+                    vol: agent.vol,
+                    brokerage: agent.brokerage,
+                    brokerage_street: agent.brokerage_street,
+                    brokerage_city: agent.brokerage_city,
+                    brokerage_state: agent.brokerage_state,
                 })
             })
             .catch(next)
