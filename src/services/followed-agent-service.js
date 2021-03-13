@@ -4,10 +4,22 @@ const FollowedAgentService = {
     },
 
     getByUsernameId(knex, id) {
-        return knex
-            .from('followed_agents')
-            .select('*')
+        return knex('followed_agents')
+            .leftOuterJoin('agents', 'agents.id', 'followed_agents.agent_id')
             .where('username_id', id)
+            .leftOuterJoin('brokerages', 'agents.brokerage', 'brokerages.id')
+            .select(
+                'followed_agents.agent_id AS id',
+                'agents.name AS name',
+                'agents.phone AS phone',
+                'agents.email AS email',
+                'agents.tot_vol AS vol',
+                'agents.tot_units AS trans',
+                'brokerages.brokerage_name AS brokerage',
+                'brokerages.street AS brokerage_street',
+                'brokerages.city AS brokerage_city',
+                'brokerages.st AS brokerage_state',
+            )
     },
     insertFollowedAgent(knex, newFollowedAgent) {
         return knex
