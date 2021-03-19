@@ -1,6 +1,7 @@
 const express = require('express');
 const UserService = require('../services/user-service')
-const FollowedAgentsService = require('../services/followed-agent-service')
+const FollowedAgentsService = require('../services/followed-agent-service');
+const FollowedAgentService = require('../services/followed-agent-service');
 
 const followedAgentRouter = express.Router();
 const bodyParser = express.json();
@@ -49,8 +50,16 @@ followedAgentRouter
             newFollowedAgent
         )
             .then(followedAgent => {
-                res.status(201)
-                .json(followedAgent)
+                const {username_id, agent_id } = followedAgent;
+                FollowedAgentService.getById(
+                    req.app.get('db'),
+                    username_id,
+                    agent_id
+                ) .then(agent => {
+                    res.status(201)
+                        .json(agent[0])
+                })
+                .catch(next)
             })
             .catch(next)
     })
