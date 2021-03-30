@@ -1,11 +1,13 @@
 const express = require('express');
 const xss = require('xss');
 const BrokerageService = require('../services/brokerage-service');
+const { requireAuth } = require('../middleware/basic-auth');
 
 const brokerageRouter = express.Router();
 
 brokerageRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         const knexInstance = req.app.get('db')
         
@@ -18,6 +20,7 @@ brokerageRouter
 
 brokerageRouter
     .route('/:id')
+    .all(requireAuth)
     .get((req, res, next) => {
         const knexInstance = req.app.get('db')
         const { id } = req.params;

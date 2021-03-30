@@ -3,12 +3,14 @@ const express = require('express');
 const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const NoteService = require('../services/note-service');
+const { requireAuth } = require('../middleware/basic-auth');
 
 const noteRouter = express.Router();
 const bodyParser = express.json();
 
 noteRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         const knexInstance = req.app.get('db')
         NoteService.getNotes(knexInstance)
@@ -18,8 +20,8 @@ noteRouter
             .catch(next);
     })
     .post(bodyParser, (req, res, next) => {
-        const { username_id, agent_id, title, content } = req.body;
-        const newNote = { username_id, agent_id, title, content };
+        const { agent_id, title, content } = req.body;
+        const newNote = { agent_id, title, content };
 
         if (!username_id) res.status(400).send('User Id is required');
         if (!agent_id) res.status(400).send('Agent Id is required');
@@ -29,6 +31,8 @@ noteRouter
         if (title.length < 3) res.status(400).send('Title must be at least 3 characters long');
         if (content.length < 5) res.status(400).send('Content must be at least 5 characters long');
 
+        newNote.username_id = req.user.id;
+        
         NoteService.insertNote(
             req.app.get('db'),
             newNote
@@ -43,7 +47,7 @@ noteRouter
 
 noteRouter
     .route('/:id')
-    .all((req, res, next) => {
+    .all(requireAuth, (req, res, next) => {
         NoteService.getById(
             req.app.get('db'), 
             req.params.id
@@ -106,6 +110,7 @@ noteRouter
 
 noteRouter
     .route('/agent/:id')
+    .all(requireAuth)
     .get((req, res, next) => {
         
         NoteService.getAgentNotes(

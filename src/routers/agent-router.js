@@ -1,11 +1,15 @@
 const express = require('express');
 const xss = require('xss')
 const AgentService = require('../services/agent-service');
+const { requireAuth } = require ('../middleware/basic-auth');
+
+
 const agentRouter = express.Router();
 
 handleSearch = (req, res, next) => {
     const { name = '', brokerage = '', sort } = req.query;
     const knexInstance = req.app.get('db');
+    debugger;
 
     AgentService.getAgents(knexInstance)
             .then(agents => {
@@ -73,10 +77,12 @@ handleSearch = (req, res, next) => {
 
 agentRouter
     .route('/')
+    .all(requireAuth)
     .get(handleSearch);
 
 agentRouter
     .route('/:id')
+    .all(requireAuth)
     .get((req, res, next) => {
         
         const knexInstance = req.app.get('db');

@@ -3,12 +3,14 @@ const express = require('express');
 const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const UserService = require('../services/user-service')
+const { requireAuth } = require('../middleware/basic-auth');
 
 const userRouter = express.Router();
 const bodyParser = express.json();
 
 userRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
       const knexInstance = req.app.get('db');
 
@@ -49,7 +51,7 @@ userRouter
 
 userRouter
     .route('/:id')
-    .all((req, res, next) => {
+    .all(requireAuth, (req, res, next) => {
       UserService.getById(
         req.app.get('db'),
         req.params.id

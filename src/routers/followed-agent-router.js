@@ -2,13 +2,14 @@ const express = require('express');
 const UserService = require('../services/user-service')
 const FollowedAgentsService = require('../services/followed-agent-service');
 const FollowedAgentService = require('../services/followed-agent-service');
+const { requireAuth } = require('../middleware/basic-auth');
 
 const followedAgentRouter = express.Router();
 const bodyParser = express.json();
 
 followedAgentRouter
     .route('/:userId')
-    .all((req, res, next) => {
+    .all(requireAuth, (req, res, next) => {
         UserService.getById(
             req.app.get('db'),
             req.params.userId
@@ -64,7 +65,6 @@ followedAgentRouter
             .catch(next)
     })
     .delete((req, res, next) => {
-        
         FollowedAgentsService.deleteFollowedAgent(
             req.app.get('db'),
             req.params.userId,
