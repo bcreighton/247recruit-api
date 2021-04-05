@@ -1,7 +1,7 @@
 const AuthService = require('../services/auth-service');
 
 requireAuth = (req, res, next) => {
-    debugger;
+    
     const authToken = req.get('Authorization') || '';
 
     let basicToken;
@@ -21,7 +21,7 @@ requireAuth = (req, res, next) => {
         return res.status(401).json({error: 'Unauthorized request'})
     }
     
-    AuthService(req.app.get('db'),tokenUsername)
+    AuthService.getUsername(req.app.get('db'),tokenUsername)
         .then(user => {
             if (!user || user.password !== tokenPassword) {
                 return res.status(401).json({ error: 'Unauthorized request'})

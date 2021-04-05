@@ -9,7 +9,7 @@ const agentRouter = express.Router();
 handleSearch = (req, res, next) => {
     const { name = '', brokerage = '', sort } = req.query;
     const knexInstance = req.app.get('db');
-    debugger;
+    
 
     AgentService.getAgents(knexInstance)
             .then(agents => {

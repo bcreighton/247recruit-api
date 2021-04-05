@@ -5,3 +5,5 @@ const AuthService = {
             .first()
     }
 }
+
+module.exports = AuthService;
