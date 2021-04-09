@@ -1,7 +1,7 @@
 const express = require('express');
 const xss = require('xss');
 const BrokerageService = require('../services/brokerage-service');
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const brokerageRouter = express.Router();
 

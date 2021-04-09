@@ -3,7 +3,7 @@ const express = require('express');
 const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const NoteService = require('../services/note-service');
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const noteRouter = express.Router();
 const bodyParser = express.json();

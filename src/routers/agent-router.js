@@ -1,7 +1,7 @@
 const express = require('express');
 const xss = require('xss')
 const AgentService = require('../services/agent-service');
-const { requireAuth } = require ('../middleware/basic-auth');
+const { requireAuth } = require ('../middleware/jwt-auth');
 
 
 const agentRouter = express.Router();

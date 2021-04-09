@@ -11,6 +11,7 @@ const agentRouter = require('./routers/agent-router')
 const noteRouter = require('./routers/note-router')
 const brokerageRouter = require('./routers/brokerage-router')
 const followedAgentRouter = require('./routers/followed-agent-router')
+const authRouter = require('./auth/auth-router')
 
 const app = express()
 
@@ -34,13 +35,12 @@ app.use(cors())
 //   next()
 // })
 
-app.use(mlsRouter);
-app.use(licenseRouter);
 app.use('/api/user', userRouter);
 app.use('/api/agent', agentRouter);
 app.use('/api/note', noteRouter);
 app.use('/api/brokerage', brokerageRouter);
 app.use('/api/followed-agent', followedAgentRouter);
+app.use('/api/auth', authRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response

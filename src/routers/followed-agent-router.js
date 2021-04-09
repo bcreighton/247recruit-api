@@ -2,7 +2,7 @@ const express = require('express');
 const UserService = require('../services/user-service')
 const FollowedAgentsService = require('../services/followed-agent-service');
 const FollowedAgentService = require('../services/followed-agent-service');
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const followedAgentRouter = express.Router();
 const bodyParser = express.json();

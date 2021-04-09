@@ -3,7 +3,7 @@ const express = require('express');
 const xss = require('xss');
 const { v4: uuid } = require('uuid');
 const UserService = require('../services/user-service')
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const userRouter = express.Router();
 const bodyParser = express.json();
