@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const xss = require('xss');
-const { v4: uuid } = require('uuid');
 const NoteService = require('../services/note-service');
 
 const noteRouter = express.Router();
