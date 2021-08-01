@@ -7,6 +7,11 @@ handleSearch = (req, res, next) => {
     const { name = '', brokerage = '', sort } = req.query;
     const knexInstance = req.app.get('db');
 
+    if(name === '' && brokerage === '') {
+        return res.status(400)
+            .send(`Please provide an agents name or brokerage to search`)
+    }
+
     AgentService.getAgents(knexInstance)
             .then(agents => {
                 if (sort) {
@@ -65,7 +70,7 @@ handleSearch = (req, res, next) => {
                 if (results.length === 0) 
                     res
                         .status(400)
-                        .send(`There are no agents matching the search of '${search}', please try again.`)
+                        .json({ error: { message: `There are no agents matching this search criteria, please try again.`}})
                 res.json(results)
             })
             .catch(next)
