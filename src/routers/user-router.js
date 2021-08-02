@@ -21,17 +21,10 @@ userRouter
         const {username, password, first_name, last_name, email, phone, brokerage} = req.body;
         const newUser = { username, password, first_name, last_name, email, phone, brokerage}
         
-
         if (!username) res.status(400).json({error: { message: 'Username is required'}});
         if (!password) res.status(400).json({error: { message: 'Password is required'}})
         if (!first_name || !last_name) res.status(400).json({error: { message: 'Your first and last name are required'}});
         if (!email) res.status(400).json({error: { message: 'A valid email address is required'}});
-
-        // if (username.length < 4 || username.length > 20) res.status(400).send('Usernname must be between 4 and 20 characters long');
-        // if (password.length < 8 || password.length > 36) res.status(400).send('Passoword must be between 8 and 36 characters long.');
-        // if (first_name.length < 2 || last_name.length < 2) res.status(400).send('Your first and last names must be longer than 2 characters long')
-        // if (!password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) res.status(400).send('Password must contain at least one digit');
-        // if (!email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) res.status(400).send('A valid email address is required');
 
         UserService.insertUser(
           req.app.get('db'),

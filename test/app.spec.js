@@ -11,7 +11,6 @@ const dbTableTransactions = require('./db-table-transactions');
 const knex = require('knex');
 const supertest = require("supertest");
 const app = require("../src/app");
-const followedAgentRouter = require("../src/routers/followed-agent-router");
 
 describe(`Agent Endpoints`, () => {
     let db;
