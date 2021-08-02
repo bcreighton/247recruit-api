@@ -10,7 +10,7 @@ handleGetLicenseData = (req, res) => {
         if (!['name'].includes(sort)) {
         return res
             .status(400)
-            .send('Sort must be name.');
+            .json({error: {messsage: 'Sort must be name.'}});
         }
     }
 
@@ -29,7 +29,7 @@ handleGetLicenseData = (req, res) => {
         })
     }
 
-    if (results.length === 0) res.status(400).send(`There are no agents matching the search of '${search}', please try again.`)
+    if (results.length === 0) res.status(400).json({error: {messsage: `There are no agents matching this search criteria, please try again.`}})
     res.json(results)
 }
 

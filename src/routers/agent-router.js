@@ -13,7 +13,7 @@ handleSearch = (req, res, next) => {
                     if (!['ascending', 'descending', 'volume', 'transactions'].includes(sort.toLowerCase())) {
                     return res
                         .status(400)
-                        .send(`Sort must be 'Ascending', 'Descending', 'Volume' or 'Transactions'.`);
+                        .json({error:{message: `Sort must be 'Ascending', 'Descending', 'Volume' or 'Transactions'.`}});
                     }
                 }
             
@@ -65,7 +65,7 @@ handleSearch = (req, res, next) => {
                 if (results.length === 0) 
                     res
                         .status(400)
-                        .send(`There are no agents matching the search of '${search}', please try again.`)
+                        .json({error: { message: `There are no agents matching this search criteria, please try again.`}})
                 res.json(results)
             })
             .catch(next)

@@ -20,13 +20,13 @@ noteRouter
         const { username_id, agent_id, title, content } = req.body;
         const newNote = { username_id, agent_id, title, content };
 
-        if (!username_id) res.status(400).send('User Id is required');
-        if (!agent_id) res.status(400).send('Agent Id is required');
-        if (!title) res.status(400).send('Title is required');
-        if (!content) res.status(400).send('Content is required');
+        if (!username_id) res.status(400).json({error: {message: 'User Id is required'}});
+        if (!agent_id) res.status(400).json({error: {message: 'Agent Id is required'}});
+        if (!title) res.status(400).json({error: {message: 'Title is required'}});
+        if (!content) res.status(400).json({error: {message: 'Content is required'}});
 
-        if (title.length < 3) res.status(400).send('Title must be at least 3 characters long');
-        if (content.length < 5) res.status(400).send('Content must be at least 5 characters long');
+        if (title.length < 3) res.status(400).json({error:{message:'Title must be at least 3 characters long'}});
+        if (content.length < 5) res.status(400).json({error:{message:'Content must be at least 5 characters long'}});
 
         NoteService.insertNote(
             req.app.get('db'),

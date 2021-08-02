@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const xss = require('xss');
-const { v4: uuid } = require('uuid');
 const UserService = require('../services/user-service')
 
 const userRouter = express.Router();
@@ -23,10 +22,10 @@ userRouter
         const newUser = { username, password, first_name, last_name, email, phone, brokerage}
         
 
-        if (!username) res.status(400).send('Username is required');
-        if (!password) res.status(400).send('Password is required')
-        if (!first_name || !last_name) res.status(400).send('Your first and last name are required');
-        if (!email) res.status(400).send('A valid email address is required');
+        if (!username) res.status(400).json({error: { message: 'Username is required'}});
+        if (!password) res.status(400).json({error: { message: 'Password is required'}})
+        if (!first_name || !last_name) res.status(400).json({error: { message: 'Your first and last name are required'}});
+        if (!email) res.status(400).json({error: { message: 'A valid email address is required'}});
 
         // if (username.length < 4 || username.length > 20) res.status(400).send('Usernname must be between 4 and 20 characters long');
         // if (password.length < 8 || password.length > 36) res.status(400).send('Passoword must be between 8 and 36 characters long.');

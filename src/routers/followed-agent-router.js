@@ -40,8 +40,8 @@ followedAgentRouter
         const {agent_id, username_id } = req.body;
         const newFollowedAgent = {agent_id, username_id}
 
-        if (!username_id) res.status(400).send('User Id is required');
-        if (!agent_id) res.status(400).send('Agent Id is required');
+        if (!username_id) res.status(400).json({error: {message: 'User Id is required'}});
+        if (!agent_id) res.status(400).json({error: {message: 'Agent Id is required'}});
 
         
 

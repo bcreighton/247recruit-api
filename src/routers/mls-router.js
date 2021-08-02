@@ -10,7 +10,7 @@ handleGetMlsData = (req, res) => {
         if(!['name', 'transSideUnits', 'vol', 'exp'].includes(sort)) {
         return res
             .status(400)
-            .send('Sort must be name, transSideUnits, vol or exp.')
+            .json({error: {message: 'Sort must be name, transSideUnits, vol or exp.'}})
         }
     }
 
